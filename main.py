@@ -19,8 +19,13 @@ while Game:
         if e.type == QUIT:
             Game = False
 
-    bg.blit(window,(0, 0))
+    window.blit(bg, (0, 0))
+
+    for g in ground:
+        g.reset()
+
     player.reset()
+    player.update()
 
     pygame.display.update()
     clock.tick(FPS)
