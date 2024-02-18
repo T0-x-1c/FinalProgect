@@ -2,9 +2,14 @@ from Class_and_func import *
 import pygame
 from pygame import *
 
-player = Player("Pict/Player/Stay/player_stay.png", 50, 50, 60, 60, 3, 2, 5)
+
+
+player = Player("Pict/Player/Stay/player_stay.png", 250, 430, 70, 70, 4, 2, 5)
+
+
 
 bg = scale(load('Pict/BackGround/parallax-mountain-bg.png'), (win_width, win_height))
+
 
 ground = []
 with open('Lvl_maps/map1.txt', 'r') as file:

@@ -2,6 +2,7 @@ import pygame
 from pygame import *
 from pygame.transform import scale, flip
 from pygame.image import load
+# from main import *
 
 
 win_width, win_height = 900, 550
@@ -12,6 +13,10 @@ clock = time.Clock()
 FPS = 60
 
 grawity = 3
+
+
+animation_stage = 0
+
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y):
@@ -43,10 +48,19 @@ class Player(GameSprite):
         if key_pressed[K_a]:
             self.rect.x -= self.speed_x
 
-    def jump(self):
-        key_pressed = key.get_pressed()
-        if key_pressed[K_SPACE]:
-            self.rect.y -= grawity
-            self.speed_y -= grawity
-            if sprite.groupcollide(self, ground, False, False):
-                pass
+    def change_foto(self, foto_path):
+        self.image = scale(load(foto_path), (self.player_width, self.player_height))
+
+    #
+    # if animation_stage == 0:
+    #     player.change_foto("Pict/Player/Jump/player_jump_1.png")
+    #     print("1")
+    # if animation_stage == 1:
+    #     player.change_foto("Pict/Player/Jump/player_jump_2.png")
+    #     print("2")
+    # if animation_stage == 2:
+    #     player.change_foto("Pict/Player/Jump/player_jump_3.png")
+    #     print("3")
+    # if animation_stage == 3:
+    #     player.change_foto("Pict/Player/Jump/player_jump_4.png")
+    #     print("4")

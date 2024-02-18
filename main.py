@@ -18,6 +18,9 @@ while Game:
     for e in event.get():
         if e.type == QUIT:
             Game = False
+        if e.type == KEYDOWN:
+            if e.key == K_SPACE:
+                pass
 
     window.blit(bg, (0, 0))
 
@@ -26,6 +29,7 @@ while Game:
 
     player.reset()
     player.update()
+
 
     pygame.display.update()
     clock.tick(FPS)
