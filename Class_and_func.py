@@ -2,28 +2,38 @@ import pygame
 from pygame import *
 from pygame.transform import scale, flip
 from pygame.image import load
-# from main import *
+import json
 
 
 win_width, win_height = 900, 550
 window = display.set_mode((win_width, win_height))
 
 clock = time.Clock()
-
 FPS = 60
 
 grawity = 3
 
-
 animation_stage = 0
 
+screen = "menu"
+LVL = "global"
+
+
+with open('Json/Game/Lvl_info.json', 'r', encoding='utf-8') as set_file:
+    lvl_info = json.load(set_file)
+
+def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
+    if btn.rect.collidepoint(mouse_pos):
+        btn = GameSprite(f'Pict/Menu/{btn_image2}', x, y, width, height)
+        btn.reset()
+    else:
+        btn = GameSprite(f'Pict/Menu/{btn_image1}', x, y, width, height)
+        btn.reset()
 
 class GameSprite(sprite.Sprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height):
         super().__init__()
         self.image = scale(load(player_image), (player_width, player_height))
-        self.speed_x = player_speed_x
-        self.speed_y = player_speed_y
         self.player_width = player_width
         self.player_height = player_height
 
@@ -37,8 +47,10 @@ class GameSprite(sprite.Sprite):
 
 class Player(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y, hp):
-        super().__init__(player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y)
+        super().__init__(player_image, player_x, player_y, player_width, player_height)
         self.hp = hp
+        self.speed_x = player_speed_x
+        self.speed_y = player_speed_y
 
     def update(self):
         key_pressed = key.get_pressed()
@@ -50,17 +62,3 @@ class Player(GameSprite):
 
     def change_foto(self, foto_path):
         self.image = scale(load(foto_path), (self.player_width, self.player_height))
-
-    #
-    # if animation_stage == 0:
-    #     player.change_foto("Pict/Player/Jump/player_jump_1.png")
-    #     print("1")
-    # if animation_stage == 1:
-    #     player.change_foto("Pict/Player/Jump/player_jump_2.png")
-    #     print("2")
-    # if animation_stage == 2:
-    #     player.change_foto("Pict/Player/Jump/player_jump_3.png")
-    #     print("3")
-    # if animation_stage == 3:
-    #     player.change_foto("Pict/Player/Jump/player_jump_4.png")
-    #     print("4")
