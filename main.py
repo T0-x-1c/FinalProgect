@@ -31,14 +31,16 @@ while Game:
             for g in ground:
                 g.reset()
         else:
-            tower.reset()
             for g in ground:
                 g.reset()
 
+            tower.reset()
+            shop.reset()
 
 
         player.reset()
         player.update()
+
 
 
     if screen == "menu":
@@ -50,6 +52,7 @@ while Game:
                 mouse_click = e.pos
                 if btn_play.rect.collidepoint(mouse_click):
                     screen = 'game'
+                    bg_music.stop()
                 if btn_setting.rect.collidepoint(mouse_click):
                     screen = 'setting'
                 if btn_quit.rect.collidepoint(mouse_click):
@@ -61,6 +64,10 @@ while Game:
         selection_btn(mouse_pos, btn_play, 'play_btn.png', 'play_select.png', 50, 230, 200, 50)
         selection_btn(mouse_pos, btn_setting, 'setting_btn.png', 'setting_select.png', 75, 300, 200, 50)
         selection_btn(mouse_pos, btn_quit, 'quit_btn.png', 'quit_select.png', 100, 370, 200, 50)
+
+        if not playing_bg_music:
+            bg_music.play(-1)
+            playing_bg_music = True
 
 
     pygame.display.update()

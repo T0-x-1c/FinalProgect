@@ -17,6 +17,12 @@ animation_stage = 0
 
 screen = "menu"
 
+playing_bg_music = False
+
+mixer.init()
+
+all_obj = sprite.Group()
+
 '''функції'''
 
 #читання json
@@ -45,6 +51,7 @@ class GameSprite(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
+        all_obj.add(self)
 
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
@@ -57,13 +64,18 @@ class Player(GameSprite):
         self.speed_x = player_speed_x
         self.speed_y = player_speed_y
 
+
     def update(self):
         key_pressed = key.get_pressed()
         if key_pressed[K_d]:
             self.rect.x += self.speed_x
+            for obj in all_obj:
+                obj.rect.x -= self.speed_x
 
         if key_pressed[K_a]:
             self.rect.x -= self.speed_x
+            for obj in all_obj:
+                obj.rect.x += self.speed_x
 
     def change_foto(self, foto_path):
         self.image = scale(load(foto_path), (self.player_width, self.player_height))
