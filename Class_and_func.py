@@ -4,7 +4,7 @@ from pygame.transform import scale, flip
 from pygame.image import load
 import json
 
-
+'''змінні для роботи программи та функцій'''
 win_width, win_height = 900, 550
 window = display.set_mode((win_width, win_height))
 
@@ -16,12 +16,14 @@ grawity = 3
 animation_stage = 0
 
 screen = "menu"
-LVL = "global"
 
+'''функції'''
 
+#читання json
 with open('Json/Game/Lvl_info.json', 'r', encoding='utf-8') as set_file:
     lvl_info = json.load(set_file)
 
+#заміна текстури кнопки коли мишка наведенна на ню(підсвічення вибраної кнопки)
 def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
     if btn.rect.collidepoint(mouse_pos):
         btn = GameSprite(f'Pict/Menu/{btn_image2}', x, y, width, height)
@@ -30,6 +32,9 @@ def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
         btn = GameSprite(f'Pict/Menu/{btn_image1}', x, y, width, height)
         btn.reset()
 
+'''класи'''
+
+#основний клас
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
         super().__init__()
@@ -44,7 +49,7 @@ class GameSprite(sprite.Sprite):
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
-
+#клас гравця
 class Player(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y, hp):
         super().__init__(player_image, player_x, player_y, player_width, player_height)

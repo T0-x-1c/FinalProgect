@@ -22,14 +22,20 @@ while Game:
                 if e.key == K_SPACE:
                     pass
 
-        window.blit(bg, (0, 0))
+        # for bg in all_bg:
+        #     window.blit(bg, (0, 0))
 
-        if LVL != "global" :
+        window.blit(bg6, (0, 0))
+
+        if lvl_info["current_level"] != "map0":
             for g in ground:
                 g.reset()
         else:
+            tower.reset()
             for g in ground:
                 g.reset()
+
+
 
         player.reset()
         player.update()
