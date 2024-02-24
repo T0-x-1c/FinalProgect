@@ -35,7 +35,7 @@ bg_music.set_volume(0.1)
 '''читання і побудова рівнів'''
 ground = []
 with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
-    x, y = -200, -100
+    x, y = -500, -100
     map = file.readlines()
     for line in map:
         for symbol in line:

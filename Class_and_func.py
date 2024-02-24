@@ -68,14 +68,23 @@ class Player(GameSprite):
     def update(self):
         key_pressed = key.get_pressed()
         if key_pressed[K_d]:
-            self.rect.x += self.speed_x
-            for obj in all_obj:
-                obj.rect.x -= self.speed_x
+            if self.rect.x < 600:
+                self.rect.x += self.speed_x
+            else:
+                for obj in all_obj:
+                    obj.rect.x -= self.speed_x
+
+                self.rect.x += self.speed_x
 
         if key_pressed[K_a]:
-            self.rect.x -= self.speed_x
-            for obj in all_obj:
-                obj.rect.x += self.speed_x
+            if self.rect.x > 220:
+                self.rect.x -= self.speed_x
+            else:
+                for obj in all_obj:
+                    obj.rect.x += self.speed_x
+
+                self.rect.x -= self.speed_x
+
 
     def change_foto(self, foto_path):
         self.image = scale(load(foto_path), (self.player_width, self.player_height))
