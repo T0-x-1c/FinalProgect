@@ -8,7 +8,9 @@ from pygame import *
 player = Player('Pict/Player/Stay/player_stay.png', 250, 430, 70, 70, 4, 2, 5)
 
 '''Нульовий рівень'''
-tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -100, 300, 600)
+tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
+close_dor = GameSprite('Pict/Lvl_sprite/tower_close_dor.png', 399, 402, 103, 100)
+open_dor = GameSprite('Pict/Lvl_sprite/tower_open_dor.png', 399, 402, 103, 100)
 shop = GameSprite('Pict/Lvl_sprite/shop.png', -100, 320, 200, 200)
 
 '''фони'''
@@ -32,6 +34,11 @@ btn_quit = GameSprite('Pict/Menu/quit_btn.png', 100, 370, 200, 50)
 bg_music = mixer.Sound('Sound/Bg_music/Menu/bg_music_menu.mp3')
 bg_music.set_volume(0.1)
 
+'''тексти'''
+font.init()
+font1 = font.SysFont('Comic Sans', 18)
+
+
 '''читання і побудова рівнів'''
 ground = []
 with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
@@ -41,9 +48,8 @@ with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
         for symbol in line:
             if symbol == 'G':
                 ground.append(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
-            # elif symbol == 'S':
-            #     player.rect.x = x
-            #     player.rect.y = y
+            elif symbol == 'T':
+                ground.append(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
             # elif symbol == 'F':
             #     gold.rect.x = x
             #     gold.rect.y = y

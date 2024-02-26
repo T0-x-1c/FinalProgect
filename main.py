@@ -19,29 +19,34 @@ while Game:
             if e.type == QUIT:
                 Game = False
             if e.type == KEYDOWN:
-                if e.key == K_SPACE:
-                    pass
+                if e.key == K_e and close_dor.rect.colliderect(player):
+                    screen = "level selection"
 
-        # for bg in all_bg:
-        #     window.blit(bg, (0, 0))
 
         window.blit(bg6, (0, 0))
 
-        if lvl_info["current_level"] != "map0":
+        if lvl_info["current_level"] == "map0":
+            shop.reset()
+            tower.reset()
+            if close_dor.rect.colliderect(player):
+                open_dor.reset()
+                hint = font1.render("Press 'e' to enter the tower", True, (180, 245, 245))
+                window.blit(hint, (close_dor.rect.x-60, close_dor.rect.y-40))
+            else:
+                close_dor.reset()
+
             for g in ground:
                 g.reset()
+
+
+
         else:
             for g in ground:
                 g.reset()
 
-            tower.reset()
-            shop.reset()
-
 
         player.reset()
         player.update()
-
-
 
     if screen == "menu":
         for e in event.get():

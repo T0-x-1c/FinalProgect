@@ -15,7 +15,7 @@ grawity = 3
 
 animation_stage = 0
 
-screen = "menu"
+screen = "game"
 
 playing_bg_music = False
 
@@ -26,7 +26,7 @@ all_obj = sprite.Group()
 '''функції'''
 
 #читання json
-with open('Json/Game/Lvl_info.json', 'r', encoding='utf-8') as set_file:
+with open('Json/Lvl_info.json', 'r', encoding='utf-8') as set_file:
     lvl_info = json.load(set_file)
 
 #заміна текстури кнопки коли мишка наведенна на ню(підсвічення вибраної кнопки)
