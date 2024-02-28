@@ -11,19 +11,10 @@ player = Player('Pict/Player/Stay/player_stay.png', 250, 430, 70, 70, 4, 2, 5)
 tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
 close_dor = GameSprite('Pict/Lvl_sprite/tower_close_dor.png', 399, 402, 103, 100)
 open_dor = GameSprite('Pict/Lvl_sprite/tower_open_dor.png', 399, 402, 103, 100)
-shop = GameSprite('Pict/Lvl_sprite/shop.png', -100, 320, 200, 200)
+shop = GameSprite('Pict/Lvl_sprite/shop.png', 800, 320, 200, 200)
 
 '''фони'''
-bg1 = scale(load('Pict/BackGround/Game/parallax-mountain-bg.png'), (win_width, win_height))
-bg2 = scale(load('Pict/BackGround/Game/parallax-mountain-foreground-trees.png'), (win_width, win_height))
-bg3 = scale(load('Pict/BackGround/Game/parallax-mountain-montain-far.png'), (win_width, win_height))
-bg4 = scale(load('Pict/BackGround/Game/parallax-mountain-mountains.png'), (win_width, win_height))
-bg5 = scale(load('Pict/BackGround/Game/parallax-mountain-trees.png'), (win_width, win_height))
-bg6 = scale(load('Pict/BackGround/Game/united_bg.png'), (win_width+10, win_height-50))
-
 bg_menu = scale(load('Pict/BackGround/Menu/bg_menu.png'), (win_width, win_height))
-
-all_bg = [bg1, bg2, bg3, bg4, bg5]
 
 '''кнопки в меню'''
 btn_play = GameSprite('Pict/Menu/play_btn.png', 50, 230, 200, 50)

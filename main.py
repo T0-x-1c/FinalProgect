@@ -23,7 +23,7 @@ while Game:
                     pass
 
 
-        window.blit(bg6, (0, 0))
+        draw_bg()
 
         if lvl_info["current_level"] == "map0":
             shop.reset()
@@ -46,6 +46,11 @@ while Game:
         player.reset()
         player.update()
 
+        # key = pygame.key.get_pressed()
+        # if key[pygame.K_a]:
+        #     scroll -= 1
+        # if key[pygame.K_d]:
+        #     scroll += 1
 
     if screen == "menu":
         for e in event.get():

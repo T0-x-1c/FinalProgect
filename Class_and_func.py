@@ -4,25 +4,6 @@ from pygame.transform import scale, flip
 from pygame.image import load
 import json
 
-'''змінні для роботи программи та функцій'''
-win_width, win_height = 900, 550
-window = display.set_mode((win_width, win_height))
-
-clock = time.Clock()
-FPS = 60
-
-grawity = 3
-
-animation_stage = 0
-
-screen = "game"
-
-playing_bg_music = False
-
-mixer.init()
-
-all_obj = sprite.Group()
-
 '''функції'''
 
 #читання json
@@ -37,6 +18,15 @@ def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
     else:
         btn = GameSprite(f'Pict/Menu/{btn_image1}', x, y, width, height)
         btn.reset()
+
+#
+def draw_bg():
+    for x in range(-1, 5):
+        speed = 1
+        for i in bg_images:
+            window.blit(i, ((x * bg_width) - scroll * speed, -50))
+            speed += 0.2
+
 
 '''класи'''
 
@@ -68,23 +58,51 @@ class Player(GameSprite):
     def update(self):
         key_pressed = key.get_pressed()
         if key_pressed[K_d]:
-            if self.rect.x < 600:
-                self.rect.x += self.speed_x
-            else:
-                for obj in all_obj:
-                    obj.rect.x -= self.speed_x
+            global scroll
+            if scroll <= 370:
+                if self.rect.x > 600:
+                    for obj in all_obj:
+                        obj.rect.x -= self.speed_x
+                    scroll += 1
 
                 self.rect.x += self.speed_x
 
         if key_pressed[K_a]:
-            if self.rect.x > 220:
-                self.rect.x -= self.speed_x
-            else:
-                for obj in all_obj:
-                    obj.rect.x += self.speed_x
+            if scroll > -50:
+                if self.rect.x < 220:
+                    for obj in all_obj:
+                        obj.rect.x += self.speed_x
+                    scroll -= 1
 
                 self.rect.x -= self.speed_x
+
 
 
     def change_foto(self, foto_path):
         self.image = scale(load(foto_path), (self.player_width, self.player_height))
+
+'''змінні для роботи программи та функцій'''
+win_width, win_height = 900, 550
+window = display.set_mode((win_width, win_height))
+
+clock = time.Clock()
+FPS = 60
+
+grawity = 3
+
+scroll = 0
+
+screen = "game"
+
+playing_bg_music = False
+
+all_obj = sprite.Group()
+
+mixer.init()
+
+bg_images = []
+
+for i in range(1, 6):
+    bg_image = image.load(f"Pict/BackGround/Game/bg_{i}.png").convert_alpha()
+    bg_images.append(bg_image)
+    bg_width = win_width
