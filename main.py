@@ -20,7 +20,7 @@ while Game:
                 Game = False
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
-                    screen = "level selection"
+                    pass
 
 
         window.blit(bg6, (0, 0))
@@ -38,8 +38,6 @@ while Game:
             for g in ground:
                 g.reset()
 
-
-
         else:
             for g in ground:
                 g.reset()
@@ -47,6 +45,7 @@ while Game:
 
         player.reset()
         player.update()
+
 
     if screen == "menu":
         for e in event.get():

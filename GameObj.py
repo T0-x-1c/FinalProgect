@@ -60,4 +60,4 @@ with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
 
             x += 50
         y += 50
-        x = 0
+        x = -500
