@@ -20,7 +20,7 @@ while Game:
                 Game = False
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
-                    pass
+                    screen = "lvl_selection"
 
         if sprite.spritecollide(player, grounds, False):
             player.onGround = True
@@ -47,6 +47,15 @@ while Game:
         player.reset()
         player.update()
 
+    if screen == "lvl_selection":
+        for e in event.get():
+            if e.type == QUIT:
+                Game = False
+
+        window.blit(bg_lvl_select, (0,0))
+
+        for btn in btn_lvl_selection:
+            btn.reset()
 
     if screen == "menu":
         for e in event.get():

@@ -39,8 +39,6 @@ def draw_bg():
         for i in bg_images:
             window.blit(i, ((x * bg_width) - scroll * speed, -50))
             speed += 0.2
-
-
 '''класи'''
 
 #основний клас
@@ -58,6 +56,9 @@ class GameSprite(sprite.Sprite):
 
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
+
+    def change_foto(self, foto_path):
+        self.image = scale(load(foto_path), (self.player_width, self.player_height))
 
 #клас гравця
 class Player(GameSprite):
@@ -108,11 +109,6 @@ class Player(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
-
-
-
-    def change_foto(self, foto_path):
-        self.image = scale(load(foto_path), (self.player_width, self.player_height))
 
 
 '''змінні для роботи программи та функцій'''

@@ -16,10 +16,35 @@ shop = GameSprite('Pict/Lvl_sprite/shop.png', 800, 320, 200, 200)
 '''фони'''
 bg_menu = scale(load('Pict/BackGround/Menu/bg_menu.png'), (win_width, win_height))
 
+bg_lvl_select = scale(load('Pict/Lvl_selection/level_selection_bg1.png'), (win_width, win_height))
+
 '''кнопки в меню'''
 btn_play = GameSprite('Pict/Menu/play_btn.png', 50, 230, 200, 50)
 btn_setting = GameSprite('Pict/Menu/setting_btn.png', 75, 300, 200, 50)
 btn_quit = GameSprite('Pict/Menu/quit_btn.png', 100, 370, 200, 50)
+
+'''кнопки вибору рівня'''
+
+btn_lvl_1 = GameSprite('Pict/Lvl_selection/btn_lvl1.png', 60, 58, 80, 80)
+btn_lvl_2 = GameSprite('Pict/Lvl_selection/btn_lvl2.png', 160, 58, 80, 80)
+btn_lvl_3 = GameSprite('Pict/Lvl_selection/btn_lvl3.png', 260, 58, 80, 80)
+btn_lvl_4 = GameSprite('Pict/Lvl_selection/btn_lvl4.png', 360, 58, 80, 80)
+btn_lvl_5 = GameSprite('Pict/Lvl_selection/btn_lvl5.png', 460, 58, 80, 80)
+btn_lvl_6 = GameSprite('Pict/Lvl_selection/btn_lvl6.png', 560, 58, 80, 80)
+btn_lvl_7 = GameSprite('Pict/Lvl_selection/btn_lvl7.png', 660, 58, 80, 80)
+btn_lvl_8 = GameSprite('Pict/Lvl_selection/btn_lvl8.png', 760, 58, 80, 80)
+btn_lvl_9 = GameSprite('Pict/Lvl_selection/btn_lvl9.png', 60, 153, 80, 80)
+btn_lvl_10 = GameSprite('Pict/Lvl_selection/btn_lvl10.png', 160, 153, 80, 80)
+btn_lvl_11 = GameSprite('Pict/Lvl_selection/btn_lvl12.png', 260, 153, 80, 80)
+btn_lvl_12 = GameSprite('Pict/Lvl_selection/btn_lvl13.png', 360, 153, 80, 80)
+btn_lvl_13 = GameSprite('Pict/Lvl_selection/btn_lvl14.png', 460, 153, 80, 80)
+btn_lvl_14 = GameSprite('Pict/Lvl_selection/btn_lvl15.png', 560, 153, 80, 80)
+btn_lvl_15 = GameSprite('Pict/Lvl_selection/btn_lvl15.png', 660, 153, 80, 80)
+btn_lvl_16 = GameSprite('Pict/Lvl_selection/btn_lvl16.png', 760, 153, 80, 80)
+
+
+btn_lvl_selection = [btn_lvl_1, btn_lvl_2, btn_lvl_3, btn_lvl_4, btn_lvl_5, btn_lvl_6, btn_lvl_7, btn_lvl_8,
+                     btn_lvl_9, btn_lvl_10, btn_lvl_11, btn_lvl_12, btn_lvl_13, btn_lvl_14, btn_lvl_15, btn_lvl_16]
 
 '''звуки'''
 bg_music = mixer.Sound('Sound/Bg_music/Menu/bg_music_menu.mp3')
