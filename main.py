@@ -22,18 +22,20 @@ while Game:
                 if e.key == K_e and close_dor.rect.colliderect(player):
                     pass
 
+        if sprite.spritecollide(player, grounds, False):
+            player.onGround = True
+            player.speed_y = 0
+        else:
+            player.onGround = False
 
         draw_bg()
 
         if lvl_info["current_level"] == "map0":
             shop.reset()
             tower.reset()
-            for g in ground:
-                g.reset()
-
+            grounds.draw(window)
         else:
-            for g in ground:
-                g.reset()
+            grounds.draw(window)
 
         if close_dor.rect.colliderect(player):
             open_dor.reset()
@@ -44,6 +46,7 @@ while Game:
 
         player.reset()
         player.update()
+
 
     if screen == "menu":
         for e in event.get():

@@ -61,11 +61,12 @@ class GameSprite(sprite.Sprite):
 
 #клас гравця
 class Player(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y, hp):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y, hp, onGround):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
         self.hp = hp
         self.speed_x = player_speed_x
         self.speed_y = player_speed_y
+        self.onGround = onGround
 
 
     def update(self):
@@ -96,8 +97,17 @@ class Player(GameSprite):
             #             scroll -= 1
             #
             #         self.rect.x -= self.speed_x
+        if not self.onGround:
+            self.speed_y += 0.5
+
+            self.rect.y += self.speed_y
+
         if key_pressed[K_SPACE]:
-            pass
+            if self.onGround:
+                self.rect.y -= 10
+                self.speed_y -= 12
+                self.onGround = False
+
 
 
 
@@ -106,11 +116,9 @@ class Player(GameSprite):
 
 
 '''змінні для роботи программи та функцій'''
-grawity = 3
-
 scroll = 0
 
-screen = "menu"
+screen = "game"
 
 playing_bg_music = False
 

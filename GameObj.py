@@ -5,7 +5,7 @@ from pygame import *
 '''Створення об'єктів'''
 
 '''загальні'''
-player = Player('Pict/Player/Stay/player_stay.png', 250, 430, 70, 70, 4, 2, 5)
+player = Player('Pict/Player/Stay/player_stay.png', 250, 400, 70, 70, 4, 0, 5, True)
 
 '''Нульовий рівень'''
 tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
@@ -31,16 +31,16 @@ font1 = font.SysFont('Comic Sans', 18)
 
 
 '''читання і побудова рівнів'''
-ground = []
+grounds = sprite.Group()
 with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
     x, y = -500, -100
     map = file.readlines()
     for line in map:
         for symbol in line:
             if symbol == 'G':
-                ground.append(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
+                grounds.add(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
             elif symbol == 'T':
-                ground.append(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
+                grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
             # elif symbol == 'F':
             #     gold.rect.x = x
             #     gold.rect.y = y
