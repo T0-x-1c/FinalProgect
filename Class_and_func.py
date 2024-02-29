@@ -4,6 +4,19 @@ from pygame.transform import scale, flip
 from pygame.image import load
 import json
 
+'''створення екрану'''
+win_width, win_height = 900, 550
+window = display.set_mode((win_width, win_height))
+
+clock = time.Clock()
+FPS = 60
+
+'''фото загрузки'''
+loading_image = bg_menu = scale(load('Pict/Loading/loading_image.png'), (win_width, win_height))
+
+window.blit(loading_image, (0,0))
+display.update()
+
 '''функції'''
 
 #читання json
@@ -21,7 +34,7 @@ def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
 
 #
 def draw_bg():
-    for x in range(-1, 5):
+    for x in range(5):
         speed = 1
         for i in bg_images:
             window.blit(i, ((x * bg_width) - scroll * speed, -50))
@@ -59,40 +72,45 @@ class Player(GameSprite):
         key_pressed = key.get_pressed()
         if key_pressed[K_d]:
             global scroll
-            if scroll <= 370:
-                if self.rect.x > 600:
-                    for obj in all_obj:
-                        obj.rect.x -= self.speed_x
-                    scroll += 1
+            # if scroll <= 370:
+            if self.rect.x > 600:
+                for obj in all_obj:
+                    obj.rect.x -= self.speed_x
+                scroll += 1
 
-                self.rect.x += self.speed_x
+            self.rect.x += self.speed_x
 
         if key_pressed[K_a]:
-            if scroll > -50:
-                if self.rect.x < 220:
-                    for obj in all_obj:
-                        obj.rect.x += self.speed_x
-                    scroll -= 1
+            # if scroll > -100:
+            if self.rect.x < 220:
+                for obj in all_obj:
+                    obj.rect.x += self.speed_x
+                scroll -= 1
 
-                self.rect.x -= self.speed_x
+            self.rect.x -= self.speed_x
+            # else:
+            #     if self.rect.x > 300:
+            #         if self.rect.x < 220:
+            #             for obj in all_obj:
+            #                 obj.rect.x += self.speed_x
+            #             scroll -= 1
+            #
+            #         self.rect.x -= self.speed_x
+        if key_pressed[K_SPACE]:
+            pass
 
 
 
     def change_foto(self, foto_path):
         self.image = scale(load(foto_path), (self.player_width, self.player_height))
 
+
 '''змінні для роботи программи та функцій'''
-win_width, win_height = 900, 550
-window = display.set_mode((win_width, win_height))
-
-clock = time.Clock()
-FPS = 60
-
 grawity = 3
 
 scroll = 0
 
-screen = "game"
+screen = "menu"
 
 playing_bg_music = False
 

@@ -28,13 +28,6 @@ while Game:
         if lvl_info["current_level"] == "map0":
             shop.reset()
             tower.reset()
-            if close_dor.rect.colliderect(player):
-                open_dor.reset()
-                hint = font1.render("Press 'e' to enter the tower", True, (180, 245, 245))
-                window.blit(hint, (close_dor.rect.x-60, close_dor.rect.y-40))
-            else:
-                close_dor.reset()
-
             for g in ground:
                 g.reset()
 
@@ -42,15 +35,15 @@ while Game:
             for g in ground:
                 g.reset()
 
+        if close_dor.rect.colliderect(player):
+            open_dor.reset()
+            hint = font1.render("Press 'e' to enter the tower", True, (180, 245, 245))
+            window.blit(hint, (close_dor.rect.x - 60, close_dor.rect.y - 40))
+        else:
+            close_dor.reset()
 
         player.reset()
         player.update()
-
-        # key = pygame.key.get_pressed()
-        # if key[pygame.K_a]:
-        #     scroll -= 1
-        # if key[pygame.K_d]:
-        #     scroll += 1
 
     if screen == "menu":
         for e in event.get():
@@ -70,9 +63,10 @@ while Game:
         window.blit(bg_menu, (0, 0))
 
         mouse_pos = mouse.get_pos()
-        selection_btn(mouse_pos, btn_play, 'play_btn.png', 'play_select.png', 50, 230, 200, 50)
-        selection_btn(mouse_pos, btn_setting, 'setting_btn.png', 'setting_select.png', 75, 300, 200, 50)
-        selection_btn(mouse_pos, btn_quit, 'quit_btn.png', 'quit_select.png', 100, 370, 200, 50)
+
+        selection_btn(mouse_pos, btn_play, 'play_btn.png', 'play_btn_select.png', 50, 230, 200, 50)
+        selection_btn(mouse_pos, btn_setting, 'setting_btn.png', 'setting_btn_select.png', 75, 300, 200, 50)
+        selection_btn(mouse_pos, btn_quit, 'quit_btn.png', 'quit_btn_select.png', 100, 370, 200, 50)
 
         if not playing_bg_music:
             bg_music.play(-1)
