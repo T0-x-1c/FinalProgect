@@ -70,7 +70,7 @@ class Player(GameSprite):
         self.onGround = onGround
 
 
-    def update(self):
+    def update(self, walk_sound):
         key_pressed = key.get_pressed()
         if key_pressed[K_d]:
             global scroll
@@ -81,8 +81,10 @@ class Player(GameSprite):
                 scroll += 1
 
             self.rect.x += self.speed_x
+            if self.onGround:
+                walk_sound.play()
 
-        if key_pressed[K_a]:
+        elif key_pressed[K_a]:
             # if scroll > -100:
             if self.rect.x < 220:
                 for obj in all_obj:
@@ -90,6 +92,9 @@ class Player(GameSprite):
                 scroll -= 1
 
             self.rect.x -= self.speed_x
+            if self.onGround:
+                walk_sound.play()
+
             # else:
             #     if self.rect.x > 300:
             #         if self.rect.x < 220:
@@ -114,9 +119,11 @@ class Player(GameSprite):
 '''змінні для роботи программи та функцій'''
 scroll = 0
 
-screen = "game"
+screen = "menu"
 
 playing_bg_music = False
+
+player_run = False
 
 all_obj = sprite.Group()
 

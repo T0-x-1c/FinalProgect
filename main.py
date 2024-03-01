@@ -20,13 +20,9 @@ while Game:
                 Game = False
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
+                    creak.play()
                     screen = "lvl_selection"
 
-        if sprite.spritecollide(player, grounds, False):
-            player.onGround = True
-            player.speed_y = 0
-        else:
-            player.onGround = False
 
         draw_bg()
 
@@ -34,28 +30,44 @@ while Game:
             shop.reset()
             tower.reset()
             grounds.draw(window)
+            if close_dor.rect.colliderect(player):
+                open_dor.reset()
+                hint = font1.render("Press 'e' to enter the tower", True, (180, 245, 245))
+                window.blit(hint, (close_dor.rect.x - 60, close_dor.rect.y - 40))
+            else:
+                close_dor.reset()
         else:
             grounds.draw(window)
 
-        if close_dor.rect.colliderect(player):
-            open_dor.reset()
-            hint = font1.render("Press 'e' to enter the tower", True, (180, 245, 245))
-            window.blit(hint, (close_dor.rect.x - 60, close_dor.rect.y - 40))
-        else:
-            close_dor.reset()
-
         player.reset()
-        player.update()
+        player.update(player_walk_grass)
+
+        if sprite.spritecollide(player, grounds, False):
+            player.onGround = True
+            player.speed_y = 0
+        else:
+            player.onGround = False
+
 
     if screen == "lvl_selection":
         for e in event.get():
             if e.type == QUIT:
                 Game = False
+            if e.type == MOUSEBUTTONDOWN:
+                mouse_click = e.pos
+                for btn in btn_lvl_selection:
+                    if btn.rect.collidepoint(mouse_click):
+                        lvl_info["current_level"] = f"map{int(btn_lvl_selection.index(btn)) + 1}"
+                        print(lvl_info["current_level"])
+                        screen = "game"
+                        creation_lvl()
+
 
         window.blit(bg_lvl_select, (0,0))
 
         for btn in btn_lvl_selection:
             btn.reset()
+
 
     if screen == "menu":
         for e in event.get():
@@ -65,11 +77,15 @@ while Game:
             if e.type == MOUSEBUTTONDOWN:
                 mouse_click = e.pos
                 if btn_play.rect.collidepoint(mouse_click):
+                    click_sound.play()
                     screen = 'game'
+                    creation_lvl()
                     bg_music.stop()
                 if btn_setting.rect.collidepoint(mouse_click):
+                    click_sound.play()
                     screen = 'setting'
                 if btn_quit.rect.collidepoint(mouse_click):
+                    click_sound.play()
                     Game = False
 
         window.blit(bg_menu, (0, 0))
@@ -83,6 +99,23 @@ while Game:
         if not playing_bg_music:
             bg_music.play(-1)
             playing_bg_music = True
+
+    if screen == 'setting':
+        for e in event.get():
+            if e.type == QUIT:
+                Game = False
+            if e.type == MOUSEBUTTONDOWN:
+                mouse_click = e.pos
+                if btn_back.rect.collidepoint(mouse_click):
+                    click_sound.play()
+                    screen = "menu"
+
+
+        window.blit(bg_setting, (0,0))
+
+        mouse_pos = mouse.get_pos()
+
+        selection_btn(mouse_pos, btn_back, 'back_btn.png.', 'back_btn_select.png', 50, 50, 75, 66)
 
 
     pygame.display.update()

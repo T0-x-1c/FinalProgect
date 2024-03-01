@@ -15,6 +15,7 @@ shop = GameSprite('Pict/Lvl_sprite/shop.png', 800, 320, 200, 200)
 
 '''фони'''
 bg_menu = scale(load('Pict/BackGround/Menu/bg_menu.png'), (win_width, win_height))
+bg_setting = scale(load('Pict/BackGround/Menu/bg_setting.png'), (win_width, win_height))
 
 bg_lvl_select = scale(load('Pict/Lvl_selection/level_selection_bg1.png'), (win_width, win_height))
 
@@ -22,6 +23,9 @@ bg_lvl_select = scale(load('Pict/Lvl_selection/level_selection_bg1.png'), (win_w
 btn_play = GameSprite('Pict/Menu/play_btn.png', 50, 230, 200, 50)
 btn_setting = GameSprite('Pict/Menu/setting_btn.png', 75, 300, 200, 50)
 btn_quit = GameSprite('Pict/Menu/quit_btn.png', 100, 370, 200, 50)
+
+'''кнопки в налаштуваннях'''
+btn_back = GameSprite('Pict/Menu/back_btn.png', 70, 70, 90, 80)
 
 '''кнопки вибору рівня'''
 
@@ -50,6 +54,13 @@ btn_lvl_selection = [btn_lvl_1, btn_lvl_2, btn_lvl_3, btn_lvl_4, btn_lvl_5, btn_
 bg_music = mixer.Sound('Sound/Bg_music/Menu/bg_music_menu.mp3')
 bg_music.set_volume(0.1)
 
+click_sound = mixer.Sound('Sound/Sound_menu/click.flac')
+
+
+creak = mixer.Sound('Sound/Game/creak.mp3')
+
+player_walk_grass = mixer.Sound('Sound/Game/walk_grass.flac')
+
 '''тексти'''
 font.init()
 font1 = font.SysFont('Comic Sans', 18)
@@ -57,23 +68,25 @@ font1 = font.SysFont('Comic Sans', 18)
 
 '''читання і побудова рівнів'''
 grounds = sprite.Group()
-with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
-    x, y = -500, -100
-    map = file.readlines()
-    for line in map:
-        for symbol in line:
-            if symbol == 'G':
-                grounds.add(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
-            elif symbol == 'T':
-                grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
-            # elif symbol == 'F':
-            #     gold.rect.x = x
-            #     gold.rect.y = y
-            # elif symbol == 'E':
-            #     enemys.append(Enemy(x, y))
-            # elif symbol == 'C':
-            #     coins.append(Coin(x + 7.5, y + 7.5))
+def creation_lvl():
+    grounds.empty()
+    with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
+        x, y = -500, -100
+        map = file.readlines()
+        for line in map:
+            for symbol in line:
+                if symbol == 'G':
+                    grounds.add(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
+                elif symbol == 'T':
+                    grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
+                # elif symbol == 'F':
+                #     gold.rect.x = x
+                #     gold.rect.y = y
+                # elif symbol == 'E':
+                #     enemys.append(Enemy(x, y))
+                # elif symbol == 'C':
+                #     coins.append(Coin(x + 7.5, y + 7.5))
 
-            x += 50
-        y += 50
-        x = -500
+                x += 50
+            y += 50
+            x = -500
