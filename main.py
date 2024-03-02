@@ -73,6 +73,7 @@ while Game:
             btn.reset()
 
 
+
     if screen == "menu":
         for e in event.get():
             if e.type == QUIT:
