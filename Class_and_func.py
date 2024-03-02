@@ -34,10 +34,10 @@ def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
 
 #
 def draw_bg():
-    for x in range(5):
+    for x in range(-2, 5):
         speed = 1
         for i in bg_images:
-            window.blit(i, ((x * bg_width) - scroll * speed, -50))
+            window.blit(i, ((x * bg_width) - scroll_x * speed, 0))
             speed += 0.2
 '''класи'''
 
@@ -70,30 +70,28 @@ class Player(GameSprite):
         self.onGround = onGround
 
 
-    def update(self, walk_sound):
+    def update(self):
         key_pressed = key.get_pressed()
         if key_pressed[K_d]:
-            global scroll
+            global scroll_x
             # if scroll <= 370:
             if self.rect.x > 600:
                 for obj in all_obj:
                     obj.rect.x -= self.speed_x
-                scroll += 1
+                scroll_x += 1
 
             self.rect.x += self.speed_x
-            if self.onGround:
-                walk_sound.play()
+
 
         elif key_pressed[K_a]:
             # if scroll > -100:
             if self.rect.x < 220:
                 for obj in all_obj:
                     obj.rect.x += self.speed_x
-                scroll -= 1
+                scroll_x -= 1
 
             self.rect.x -= self.speed_x
-            if self.onGround:
-                walk_sound.play()
+
 
             # else:
             #     if self.rect.x > 300:
@@ -114,10 +112,20 @@ class Player(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
+        # if self.rect.y <= 150 and not self.onGround:
+        #     global  scroll_y
+        #     for obj in all_obj:
+        #         obj.rect.y -= self.speed_y
+        #
+        # if self.rect.y > 445 and not self.onGround:
+        #     for obj in all_obj:
+        #         obj.rect.y -= self.speed_y
+
 
 
 '''змінні для роботи программи та функцій'''
-scroll = 0
+scroll_x = 0
+scroll_y = 0
 
 screen = "menu"
 

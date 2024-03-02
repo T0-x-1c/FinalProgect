@@ -25,6 +25,14 @@ while Game:
 
 
         draw_bg()
+        colide_list = sprite.spritecollide(player, grounds, False)
+        for i in colide_list:
+            if player.rect.bottom >= i.rect.top and player.rect.bottom <= i.rect.top + 20:
+                player.onGround = True
+                player.speed_y = 0
+
+        if colide_list == []:
+            player.onGround = False
 
         if lvl_info["current_level"] == "map0":
             shop.reset()
@@ -36,17 +44,13 @@ while Game:
                 window.blit(hint, (close_dor.rect.x - 60, close_dor.rect.y - 40))
             else:
                 close_dor.reset()
+
         else:
             grounds.draw(window)
 
-        player.reset()
-        player.update(player_walk_grass)
 
-        if sprite.spritecollide(player, grounds, False):
-            player.onGround = True
-            player.speed_y = 0
-        else:
-            player.onGround = False
+        player.reset()
+        player.update()
 
 
     if screen == "lvl_selection":

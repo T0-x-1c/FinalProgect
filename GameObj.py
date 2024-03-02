@@ -7,6 +7,8 @@ from pygame import *
 '''загальні'''
 player = Player('Pict/Player/Stay/player_stay.png', 250, 400, 70, 70, 4, 0, 5, True)
 
+
+
 '''Нульовий рівень'''
 tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
 close_dor = GameSprite('Pict/Lvl_sprite/tower_close_dor.png', 399, 402, 103, 100)
@@ -71,7 +73,7 @@ grounds = sprite.Group()
 def creation_lvl():
     grounds.empty()
     with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
-        x, y = -500, -100
+        x, y = -1000, -100
         map = file.readlines()
         for line in map:
             for symbol in line:
@@ -79,14 +81,7 @@ def creation_lvl():
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
                 elif symbol == 'T':
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
-                # elif symbol == 'F':
-                #     gold.rect.x = x
-                #     gold.rect.y = y
-                # elif symbol == 'E':
-                #     enemys.append(Enemy(x, y))
-                # elif symbol == 'C':
-                #     coins.append(Coin(x + 7.5, y + 7.5))
 
                 x += 50
             y += 50
-            x = -500
+            x = -1000
