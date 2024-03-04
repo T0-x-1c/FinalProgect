@@ -73,7 +73,7 @@ grounds = sprite.Group()
 def creation_lvl():
     grounds.empty()
     with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
-        x, y = -1000, -100
+        x, y = -50, -100
         map = file.readlines()
         for line in map:
             for symbol in line:
@@ -84,4 +84,4 @@ def creation_lvl():
 
                 x += 50
             y += 50
-            x = -1000
+            x = -50

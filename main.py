@@ -52,6 +52,7 @@ while Game:
         player.reset()
         player.update()
 
+        print(player.rect.x)
 
     if screen == "lvl_selection":
         for e in event.get():

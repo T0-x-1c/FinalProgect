@@ -34,10 +34,10 @@ def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
 
 #
 def draw_bg():
-    for x in range(-2, 5):
+    for x in range(5):
         speed = 1
-        for i in bg_images:
-            window.blit(i, ((x * bg_width) - scroll_x * speed, 0))
+        for bg in bg_images:
+            window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
             speed += 0.2
 '''класи'''
 
@@ -86,11 +86,14 @@ class Player(GameSprite):
         elif key_pressed[K_a]:
             # if scroll > -100:
             if self.rect.x < 220:
-                for obj in all_obj:
-                    obj.rect.x += self.speed_x
-                scroll_x -= 1
+                if scroll_x > 0:
+                    for obj in all_obj:
+                        obj.rect.x += self.speed_x
 
-            self.rect.x -= self.speed_x
+                    scroll_x -= 1
+
+            if self.rect.x > 0:
+                self.rect.x -= self.speed_x
 
 
             # else:
@@ -121,6 +124,9 @@ class Player(GameSprite):
         #     for obj in all_obj:
         #         obj.rect.y -= self.speed_y
 
+class Button(GameSprite):
+
+
 
 
 '''змінні для роботи программи та функцій'''
@@ -142,4 +148,3 @@ bg_images = []
 for i in range(1, 6):
     bg_image = image.load(f"Pict/BackGround/Game/bg_{i}.png").convert_alpha()
     bg_images.append(bg_image)
-    bg_width = win_width
