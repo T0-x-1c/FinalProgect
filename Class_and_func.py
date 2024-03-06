@@ -2,7 +2,10 @@ import pygame
 from pygame import *
 from pygame.transform import scale, flip
 from pygame.image import load
+from random import randint
+from time import time as timer
 import json
+
 
 '''створення екрану'''
 win_width, win_height = 900, 550
@@ -52,6 +55,7 @@ class GameSprite(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
+
         all_obj.add(self)
 
     def reset(self):
@@ -70,11 +74,20 @@ class Player(GameSprite):
         self.onGround = onGround
 
 
-    def update(self):
+    def update(self, ground):
         key_pressed = key.get_pressed()
+
+        colide_list = sprite.spritecollide(self, ground, False)
+        for i in colide_list:
+            if self.rect.bottom >= i.rect.top and self.rect.bottom <= i.rect.top + 15 or self.rect.y >= 432:
+                self.onGround = True
+                self.speed_y = 0
+
+        if colide_list == []:
+            self.onGround = False
+
         if key_pressed[K_d]:
             global scroll_x
-            # if scroll <= 370:
             if self.rect.x > 600:
                 for obj in all_obj:
                     obj.rect.x -= self.speed_x
@@ -84,7 +97,6 @@ class Player(GameSprite):
 
 
         elif key_pressed[K_a]:
-            # if scroll > -100:
             if self.rect.x < 220:
                 if scroll_x > 0:
                     for obj in all_obj:
@@ -96,18 +108,14 @@ class Player(GameSprite):
                 self.rect.x -= self.speed_x
 
 
-            # else:
-            #     if self.rect.x > 300:
-            #         if self.rect.x < 220:
-            #             for obj in all_obj:
-            #                 obj.rect.x += self.speed_x
-            #             scroll -= 1
-            #
-            #         self.rect.x -= self.speed_x
         if not self.onGround:
             self.speed_y += 0.5
 
             self.rect.y += self.speed_y
+            global scroll_y
+            if self.rect.y > 600:
+                self.rect.y = 300
+                self.speed_y = 0
 
         if key_pressed[K_SPACE]:
             if self.onGround:
@@ -115,18 +123,70 @@ class Player(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
-        # if self.rect.y <= 150 and not self.onGround:
-        #     global  scroll_y
+        # if self.rect.y <= 200:
         #     for obj in all_obj:
         #         obj.rect.y -= self.speed_y
         #
-        # if self.rect.y > 445 and not self.onGround:
+        # elif self.rect.y > 445:
         #     for obj in all_obj:
         #         obj.rect.y -= self.speed_y
 
-class Button(GameSprite):
+class Button():
+    def __init__(self, player_image, player_x, player_y, player_width, player_height):
+        super().__init__()
+        self.image = scale(load(player_image), (player_width, player_height))
+        self.player_width = player_width
+        self.player_height = player_height
+
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+    def change_foto(self, foto_path):
+        self.image = scale(load(foto_path), (self.player_width, self.player_height))
+    def selection_btn(self, mouse_pos, photo_path1, photo_path2):
+        if self.rect.collidepoint(mouse_pos):
+            self.change_foto(photo_path2)
+            self.reset()
+        else:
+            self.change_foto(photo_path1)
+            self.reset()
+
+class Monster(GameSprite):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, onGround):
+        super().__init__(player_image, player_x, player_y, player_width, player_height)
+
+        self.hp = hp
+        self.speed_x = speed_x
+        self.speed_y = speed_y
+        self.onGround = onGround
+        self.default_pos_x = self.rect.x
+        self.default_pos_y = self.rect.y
 
 
+    def update(self, target):
+        if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 500:
+            self.rect.x += self.speed_x
+            global start_time_create
+            start_time_create = False
+
+        elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 500:
+            self.rect.x -= self.speed_x
+            start_time_create = False
+
+        else:
+            if not start_time_create:
+                global start_time
+                start_time = timer()
+                start_time_create = True
+            if start_time - timer() <= -2:
+                if self.rect.x > self.default_pos_x:
+                    self.rect.x -= self.speed_x/2
+                elif self.rect.x < self.default_pos_x:
+                    self.rect.x += self.speed_x/2
 
 
 '''змінні для роботи программи та функцій'''
@@ -137,11 +197,16 @@ screen = "menu"
 
 playing_bg_music = False
 
+start_time_create = False
+
 player_run = False
 
 all_obj = sprite.Group()
 
 mixer.init()
+
+global coordinate_points
+coordinate_points = {}
 
 bg_images = []
 

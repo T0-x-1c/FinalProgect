@@ -24,15 +24,8 @@ while Game:
                     screen = "lvl_selection"
 
 
-        draw_bg()
-        colide_list = sprite.spritecollide(player, grounds, False)
-        for i in colide_list:
-            if player.rect.bottom >= i.rect.top and player.rect.bottom <= i.rect.top + 20:
-                player.onGround = True
-                player.speed_y = 0
 
-        if colide_list == []:
-            player.onGround = False
+        draw_bg()
 
         if lvl_info["current_level"] == "map0":
             shop.reset()
@@ -49,10 +42,15 @@ while Game:
             grounds.draw(window)
 
 
-        player.reset()
-        player.update()
 
-        print(player.rect.x)
+        player.reset()
+        player.update(ground = grounds)
+
+        for monster in monsters:
+            monster.reset()
+            monster.update(target = player)
+
+        print(clock.get_fps())
 
     if screen == "lvl_selection":
         for e in event.get():
@@ -67,12 +65,16 @@ while Game:
                         screen = "game"
                         creation_lvl()
 
+            if e.type == KEYDOWN:
+                if e.key == K_e or e.key == K_ESCAPE:
+                    creak.play()
+                    screen = "game"
+
 
         window.blit(bg_lvl_select, (0,0))
 
         for btn in btn_lvl_selection:
             btn.reset()
-
 
 
     if screen == "menu":
@@ -98,9 +100,9 @@ while Game:
 
         mouse_pos = mouse.get_pos()
 
-        selection_btn(mouse_pos, btn_play, 'play_btn.png', 'play_btn_select.png', 50, 230, 200, 50)
-        selection_btn(mouse_pos, btn_setting, 'setting_btn.png', 'setting_btn_select.png', 75, 300, 200, 50)
-        selection_btn(mouse_pos, btn_quit, 'quit_btn.png', 'quit_btn_select.png', 100, 370, 200, 50)
+        btn_play.selection_btn(mouse_pos, 'Pict/Menu/play_btn.png', 'Pict/Menu/play_btn_select.png')
+        btn_setting.selection_btn(mouse_pos, 'Pict/Menu/setting_btn.png', 'Pict/Menu/setting_btn_select.png')
+        btn_quit.selection_btn(mouse_pos, 'Pict/Menu/quit_btn.png', 'Pict/Menu/quit_btn_select.png')
 
         if not playing_bg_music:
             bg_music.play(-1)
