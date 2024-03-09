@@ -23,11 +23,8 @@ while Game:
                     creak.play()
                     screen = "lvl_selection"
 
-
-
-        draw_bg()
-
         if lvl_info["current_level"] == "map0":
+            draw_bg()
             shop.reset()
             tower.reset()
             grounds.draw(window)
@@ -39,8 +36,8 @@ while Game:
                 close_dor.reset()
 
         else:
+            draw_bg()
             grounds.draw(window)
-
 
 
         player.reset()
@@ -48,9 +45,8 @@ while Game:
 
         for monster in monsters:
             monster.reset()
-            monster.update(target = player)
+            monster.update(target = player, ground = grounds)
 
-        print(clock.get_fps())
 
     if screen == "lvl_selection":
         for e in event.get():

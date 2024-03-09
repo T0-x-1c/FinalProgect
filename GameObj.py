@@ -58,7 +58,6 @@ bg_music.set_volume(0.1)
 
 click_sound = mixer.Sound('Sound/Sound_menu/click.flac')
 
-
 creak = mixer.Sound('Sound/Game/creak.mp3')
 
 player_walk_grass = mixer.Sound('Sound/Game/walk_grass.flac')
@@ -69,8 +68,7 @@ font1 = font.SysFont('Comic Sans', 18)
 
 
 '''читання і побудова рівнів'''
-monsters = sprite.Group()
-grounds = sprite.Group()
+
 def creation_lvl():
     grounds.empty()
     with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:

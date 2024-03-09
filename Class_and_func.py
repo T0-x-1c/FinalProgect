@@ -42,6 +42,13 @@ def draw_bg():
         for bg in bg_images:
             window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
             speed += 0.2
+def draw_tow_bg():
+    for x in range(2):
+        speed = 1
+        for bg in bg_tower_images:
+            window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
+            speed += 0.2
+
 '''класи'''
 
 #основний клас
@@ -91,16 +98,20 @@ class Player(GameSprite):
             if self.rect.x > 600:
                 for obj in all_obj:
                     obj.rect.x -= self.speed_x
+                for mons in monsters:
+                    mons.default_pos_x -= self.speed_x
+
                 scroll_x += 1
 
             self.rect.x += self.speed_x
-
 
         elif key_pressed[K_a]:
             if self.rect.x < 220:
                 if scroll_x > 0:
                     for obj in all_obj:
                         obj.rect.x += self.speed_x
+                    for mons in monsters:
+                        mons.default_pos_x += self.speed_x
 
                     scroll_x -= 1
 
@@ -167,15 +178,35 @@ class Monster(GameSprite):
         self.default_pos_y = self.rect.y
 
 
-    def update(self, target):
-        if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 500:
+    def update(self, target, ground):
+        colide_list = sprite.spritecollide(self, ground, False)
+        for grd in colide_list:
+            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top or self.rect.y >= 432:
+                self.onGround = True
+                self.speed_y = 0
+
+        if colide_list == []:
+            self.onGround = False
+
+        if not self.onGround:
+            self.speed_y += 0.5
+
+            self.rect.y += self.speed_y
+
+        if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 300:
             self.rect.x += self.speed_x
             global start_time_create
             start_time_create = False
 
-        elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 500:
+        elif target.rect.x < self.rect.x and target.rect.y - self.rect.x <= 300:
             self.rect.x -= self.speed_x
             start_time_create = False
+
+        elif target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80:
+            if self.onGround:
+                self.rect.y -= 10
+                self.speed_y -= 12
+                self.onGround = False
 
         else:
             if not start_time_create:
@@ -190,6 +221,9 @@ class Monster(GameSprite):
 
 
 '''змінні для роботи программи та функцій'''
+monsters = sprite.Group()
+grounds = sprite.Group()
+
 scroll_x = 0
 scroll_y = 0
 
@@ -209,7 +243,12 @@ global coordinate_points
 coordinate_points = {}
 
 bg_images = []
+bg_tower_images = []
 
 for i in range(1, 6):
     bg_image = image.load(f"Pict/BackGround/Game/bg_{i}.png").convert_alpha()
     bg_images.append(bg_image)
+
+for i in range(1, 3):
+    bg_tower_image = image.load(f"Pict/BackGround/Game/bg_game{i}.png").convert_alpha()
+    bg_tower_images.append(bg_tower_images)
