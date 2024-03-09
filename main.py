@@ -36,7 +36,7 @@ while Game:
                 close_dor.reset()
 
         else:
-            draw_bg()
+            draw_tow_bg()
             grounds.draw(window)
 
 
@@ -119,8 +119,7 @@ while Game:
 
         mouse_pos = mouse.get_pos()
 
-        selection_btn(mouse_pos, btn_back, 'back_btn.png.', 'back_btn_select.png', 50, 50, 75, 66)
-
+        btn_back.selection_btn(mouse_pos, 'Pict/Menu/back_btn.png.', 'Pict/Menu/back_btn_select.png')
 
     pygame.display.update()
     clock.tick(FPS)

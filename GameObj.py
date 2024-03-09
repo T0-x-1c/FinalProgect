@@ -8,7 +8,6 @@ from pygame import *
 player = Player('Pict/Player/Stay/player_stay.png', 250, 400, 70, 70, 4, 0, 5, True)
 
 
-
 '''Нульовий рівень'''
 tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
 close_dor = GameSprite('Pict/Lvl_sprite/tower_close_dor.png', 399, 402, 103, 100)
@@ -27,7 +26,7 @@ btn_setting = Button('Pict/Menu/setting_btn.png', 75, 300, 200, 50)
 btn_quit = Button('Pict/Menu/quit_btn.png', 100, 370, 200, 50)
 
 '''кнопки в налаштуваннях'''
-btn_back = GameSprite('Pict/Menu/back_btn.png', 70, 70, 90, 80)
+btn_back = Button('Pict/Menu/back_btn.png', 70, 70, 90, 80)
 
 '''кнопки вибору рівня'''
 

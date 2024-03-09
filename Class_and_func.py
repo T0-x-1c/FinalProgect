@@ -26,16 +26,6 @@ display.update()
 with open('Json/Lvl_info.json', 'r', encoding='utf-8') as set_file:
     lvl_info = json.load(set_file)
 
-#заміна текстури кнопки коли мишка наведенна на ню(підсвічення вибраної кнопки)
-def selection_btn(mouse_pos, btn, btn_image1, btn_image2, x, y, width, height):
-    if btn.rect.collidepoint(mouse_pos):
-        btn = GameSprite(f'Pict/Menu/{btn_image2}', x, y, width, height)
-        btn.reset()
-    else:
-        btn = GameSprite(f'Pict/Menu/{btn_image1}', x, y, width, height)
-        btn.reset()
-
-#
 def draw_bg():
     for x in range(5):
         speed = 1
@@ -47,7 +37,7 @@ def draw_tow_bg():
         speed = 1
         for bg in bg_tower_images:
             window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
-            speed += 0.2
+            speed += 1
 
 '''класи'''
 
@@ -85,8 +75,8 @@ class Player(GameSprite):
         key_pressed = key.get_pressed()
 
         colide_list = sprite.spritecollide(self, ground, False)
-        for i in colide_list:
-            if self.rect.bottom >= i.rect.top and self.rect.bottom <= i.rect.top + 15 or self.rect.y >= 432:
+        for grd in colide_list:
+            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
                 self.onGround = True
                 self.speed_y = 0
 
@@ -95,7 +85,7 @@ class Player(GameSprite):
 
         if key_pressed[K_d]:
             global scroll_x
-            if self.rect.x > 600:
+            if self.rect.x > 600 and scroll_x < 370:
                 for obj in all_obj:
                     obj.rect.x -= self.speed_x
                 for mons in monsters:
@@ -103,7 +93,10 @@ class Player(GameSprite):
 
                 scroll_x += 1
 
-            self.rect.x += self.speed_x
+            if self.rect.x < 840:
+                self.rect.x += self.speed_x
+
+            print(self.rect.x, scroll_x)
 
         elif key_pressed[K_a]:
             if self.rect.x < 220:
@@ -167,7 +160,7 @@ class Button():
             self.reset()
 
 class Monster(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, onGround):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, onGround, see_target = False):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.hp = hp
@@ -176,12 +169,13 @@ class Monster(GameSprite):
         self.onGround = onGround
         self.default_pos_x = self.rect.x
         self.default_pos_y = self.rect.y
+        self.see_target = see_target
 
 
     def update(self, target, ground):
         colide_list = sprite.spritecollide(self, ground, False)
         for grd in colide_list:
-            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top or self.rect.y >= 432:
+            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
                 self.onGround = True
                 self.speed_y = 0
 
@@ -197,18 +191,15 @@ class Monster(GameSprite):
             self.rect.x += self.speed_x
             global start_time_create
             start_time_create = False
+            self.see_target = True
 
         elif target.rect.x < self.rect.x and target.rect.y - self.rect.x <= 300:
             self.rect.x -= self.speed_x
             start_time_create = False
-
-        elif target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80:
-            if self.onGround:
-                self.rect.y -= 10
-                self.speed_y -= 12
-                self.onGround = False
+            self.see_target = True
 
         else:
+            self.see_target = False
             if not start_time_create:
                 global start_time
                 start_time = timer()
@@ -218,6 +209,22 @@ class Monster(GameSprite):
                     self.rect.x -= self.speed_x/2
                 elif self.rect.x < self.default_pos_x:
                     self.rect.x += self.speed_x/2
+
+
+        if target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80 and not self.see_target:
+            if self.onGround:
+                self.rect.y -= 10
+                self.speed_y -= 12
+                self.onGround = False
+
+class Weapon(GameSprite):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, damage):
+        super().__init__(player_image, player_x, player_y, player_width, player_height)
+
+        self.damage = damage
+
+    def attac(self):
+        pass
 
 
 '''змінні для роботи программи та функцій'''
@@ -239,9 +246,6 @@ all_obj = sprite.Group()
 
 mixer.init()
 
-global coordinate_points
-coordinate_points = {}
-
 bg_images = []
 bg_tower_images = []
 
@@ -250,5 +254,5 @@ for i in range(1, 6):
     bg_images.append(bg_image)
 
 for i in range(1, 3):
-    bg_tower_image = image.load(f"Pict/BackGround/Game/bg_game{i}.png").convert_alpha()
-    bg_tower_images.append(bg_tower_images)
+    bg_tower_image = scale(image.load(f"Pict/BackGround/Game/bg_game{i}.png"), (win_width, win_height)).convert_alpha()
+    bg_tower_images.append(bg_tower_image)
