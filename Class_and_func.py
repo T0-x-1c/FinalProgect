@@ -30,7 +30,7 @@ def draw_bg():
     for x in range(5):
         speed = 1
         for bg in bg_images:
-            window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
+            window.blit(bg, ((x * win_width) - scroll_x * speed, -50))
             speed += 0.2
 def draw_tow_bg():
     for x in range(2):
@@ -95,8 +95,6 @@ class Player(GameSprite):
 
             if self.rect.x < 840:
                 self.rect.x += self.speed_x
-
-            print(self.rect.x, scroll_x)
 
         elif key_pressed[K_a]:
             if self.rect.x < 220:
@@ -218,18 +216,32 @@ class Monster(GameSprite):
                 self.onGround = False
 
 class Weapon(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, damage):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
-        self.damage = damage
+        self.extended = False
 
-    def attac(self):
-        pass
+    def update(self, owner):
+        if self.extended:
+            self.rect.x = owner.rect.x + 45
+            self.rect.y = owner.rect.y - 10
+        else:
+            self.rect.x = owner.rect.x + 45
+            self.rect.y = owner.rect.y
 
+    def attack(self, attack_path):
+        attack = Attack(attack_path, self.rect.x, self.rect.y, 16, 16)
+        attacks.add(attack)
+
+class Attack(GameSprite):
+    def update(self):
+        self.rect.x -= 5
 
 '''змінні для роботи программи та функцій'''
 monsters = sprite.Group()
 grounds = sprite.Group()
+grounds_bg = sprite.Group()
+attacks = sprite.Group()
 
 scroll_x = 0
 scroll_y = 0

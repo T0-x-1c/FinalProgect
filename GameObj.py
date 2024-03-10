@@ -6,7 +6,7 @@ from pygame import *
 
 '''загальні'''
 player = Player('Pict/Player/Stay/player_stay.png', 250, 400, 70, 70, 4, 0, 5, True)
-
+katana = Weapon('Pict/Player/weapon/katana/katana.png', 0, 0, 7, 62)
 
 '''Нульовий рівень'''
 tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
@@ -81,8 +81,20 @@ def creation_lvl():
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
                 elif symbol == 'D':
                     grounds.add(GameSprite("Pict/Lvl_sprite/dirt.jpeg", x, y, 50, 50))
+                elif symbol == 'E':
+                    grounds.add(GameSprite("Pict/Lvl_sprite/right_corner.png", x, y, 50, 50))
+                elif symbol == 'Q':
+                    grounds.add(GameSprite("Pict/Lvl_sprite/left_corner.png", x, y, 50, 50))
+
+                elif symbol == 'R':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/right_wall.png", x, y, 50, 50))
+                elif symbol == 'L':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/left_wall.png", x, y, 50, 50))
+                elif symbol == 'N':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/ground_empty.png", x, y, 50, 50))
+
                 elif symbol == 'Z':
-                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-5, 58, 66, 2, 0, 5, True))
+                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, True))
 
                 x += 50
             y += 50

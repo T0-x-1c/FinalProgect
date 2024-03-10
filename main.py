@@ -18,10 +18,22 @@ while Game:
         for e in event.get():
             if e.type == QUIT:
                 Game = False
+            if e.type == MOUSEBUTTONDOWN:
+                if e.button == 1:
+                    katana.attack("Pict/Player/weapon/katana/attack.png")
+                    print("at")
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
                     creak.play()
                     screen = "lvl_selection"
+                if e.key == K_1 and not katana.extended:
+                    katana.image = flip(katana.image, True, True)
+                    katana.extended = True
+                    print(katana.extended)
+                elif e.key == K_1 and katana.extended:
+                    katana.image = flip(katana.image, True, True)
+                    katana.extended = False
+
 
         if lvl_info["current_level"] == "map0":
             draw_bg()
@@ -38,14 +50,22 @@ while Game:
         else:
             draw_tow_bg()
             grounds.draw(window)
+            grounds_bg.draw(window)
+
+            for monster in monsters:
+                monster.reset()
+                monster.update(target=player, ground=grounds)
 
 
+        if katana.extended:
+            katana.reset()
         player.reset()
-        player.update(ground = grounds)
+        player.update(ground=grounds)
+        if not katana.extended:
+            katana.reset()
+        katana.update(owner=player)
 
-        for monster in monsters:
-            monster.reset()
-            monster.update(target = player, ground = grounds)
+        attacks.update()
 
 
     if screen == "lvl_selection":
@@ -57,7 +77,6 @@ while Game:
                 for btn in btn_lvl_selection:
                     if btn.rect.collidepoint(mouse_click):
                         lvl_info["current_level"] = f"map{int(btn_lvl_selection.index(btn)) + 1}"
-                        print(lvl_info["current_level"])
                         screen = "game"
                         creation_lvl()
 
