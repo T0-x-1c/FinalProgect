@@ -20,8 +20,7 @@ while Game:
                 Game = False
             if e.type == MOUSEBUTTONDOWN:
                 if e.button == 1:
-                    katana.attack("Pict/Player/weapon/katana/attack.png")
-                    print("at")
+                    katana.attack("Pict/Player/weapon/katana/attack_2.png", 3)
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
                     creak.play()
@@ -29,7 +28,6 @@ while Game:
                 if e.key == K_1 and not katana.extended:
                     katana.image = flip(katana.image, True, True)
                     katana.extended = True
-                    print(katana.extended)
                 elif e.key == K_1 and katana.extended:
                     katana.image = flip(katana.image, True, True)
                     katana.extended = False
@@ -59,13 +57,21 @@ while Game:
 
         if katana.extended:
             katana.reset()
+
         player.reset()
         player.update(ground=grounds)
+
         if not katana.extended:
             katana.reset()
         katana.update(owner=player)
 
+        for attack in attacks:
+            attack.reset()
         attacks.update()
+
+        if sprite.groupcollide(attacks, monsters, True, False):
+            for monster in monsters:
+                monster.hp -= attack.damage
 
 
     if screen == "lvl_selection":

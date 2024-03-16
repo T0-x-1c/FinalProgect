@@ -61,7 +61,10 @@ class GameSprite(sprite.Sprite):
     def change_foto(self, foto_path):
         self.image = scale(load(foto_path), (self.player_width, self.player_height))
 
+
+
 #клас гравця
+
 class Player(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height, player_speed_x, player_speed_y, hp, onGround):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
@@ -125,13 +128,10 @@ class Player(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
-        # if self.rect.y <= 200:
-        #     for obj in all_obj:
-        #         obj.rect.y -= self.speed_y
-        #
-        # elif self.rect.y > 445:
-        #     for obj in all_obj:
-        #         obj.rect.y -= self.speed_y
+    def damage(self, attack):
+        self.hp -= attack.damage
+
+
 
 class Button():
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
@@ -215,6 +215,9 @@ class Monster(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
+        if self.hp <= 0:
+            self.kill()
+
 class Weapon(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
@@ -229,13 +232,18 @@ class Weapon(GameSprite):
             self.rect.x = owner.rect.x + 45
             self.rect.y = owner.rect.y
 
-    def attack(self, attack_path):
-        attack = Attack(attack_path, self.rect.x, self.rect.y, 16, 16)
+    def attack(self, attack_path, attack_damage):
+        attack = Attack(attack_path, self.rect.x, self.rect.y, 48, 48, attack_damage)
         attacks.add(attack)
 
 class Attack(GameSprite):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, damage):
+        super().__init__(player_image, player_x, player_y, player_width, player_height)
+
+        self.damage = damage
     def update(self):
-        self.rect.x -= 5
+        self.rect.x -= 10
+
 
 '''змінні для роботи программи та функцій'''
 monsters = sprite.Group()
