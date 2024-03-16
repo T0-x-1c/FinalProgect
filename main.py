@@ -2,11 +2,6 @@ from GameObj import *
 
 import pygame
 from pygame import *
-from pygame.sprite import Sprite
-from pygame.transform import scale, flip
-from pygame.image import load
-from random import randint
-from time import time as timer
 import pygame_widgets
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
@@ -19,17 +14,15 @@ while Game:
             if e.type == QUIT:
                 Game = False
             if e.type == MOUSEBUTTONDOWN:
-                if e.button == 1:
+                if e.button == 1 and katana.extended:
                     katana.attack("Pict/Player/weapon/katana/attack_2.png", 3)
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
                     creak.play()
                     screen = "lvl_selection"
                 if e.key == K_1 and not katana.extended:
-                    katana.image = flip(katana.image, True, True)
                     katana.extended = True
                 elif e.key == K_1 and katana.extended:
-                    katana.image = flip(katana.image, True, True)
                     katana.extended = False
 
 
@@ -55,13 +48,13 @@ while Game:
                 monster.update(target=player, ground=grounds)
 
 
-        if katana.extended:
+        if not katana.extended:
             katana.reset()
 
         player.reset()
         player.update(ground=grounds)
 
-        if not katana.extended:
+        if katana.extended:
             katana.reset()
         katana.update(owner=player)
 
@@ -141,10 +134,16 @@ while Game:
 
 
         window.blit(bg_setting, (0,0))
+        window.blit(txt_loudness_music, (640,50))
+        window.blit(txt_game_sound, (640,170))
+        pygame_widgets.update(e)
 
         mouse_pos = mouse.get_pos()
 
         btn_back.selection_btn(mouse_pos, 'Pict/Menu/back_btn.png.', 'Pict/Menu/back_btn_select.png')
+
+        music_output.setText(round(music_loudness.getValue(), 2))
+        game_sound_output.setText(round(game_sound_loudness.getValue(), 2))
 
     pygame.display.update()
     clock.tick(FPS)

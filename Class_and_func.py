@@ -1,11 +1,19 @@
+import mouse
 import pygame
 from pygame import *
 from pygame.transform import scale, flip
 from pygame.image import load
 from random import randint
 from time import time as timer
+import pygame_widgets
+from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox
 import json
+import math
 
+init()
+font.init()
+mixer.init()
 
 '''створення екрану'''
 win_width, win_height = 900, 550
@@ -25,6 +33,9 @@ display.update()
 #читання json
 with open('Json/Lvl_info.json', 'r', encoding='utf-8') as set_file:
     lvl_info = json.load(set_file)
+
+with open('Json/setting.json', 'r', encoding='utf-8') as set_file:
+    settings = json.load(set_file)
 
 def draw_bg():
     for x in range(5):
@@ -191,7 +202,7 @@ class Monster(GameSprite):
             start_time_create = False
             self.see_target = True
 
-        elif target.rect.x < self.rect.x and target.rect.y - self.rect.x <= 300:
+        elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300:
             self.rect.x -= self.speed_x
             start_time_create = False
             self.see_target = True
@@ -209,7 +220,7 @@ class Monster(GameSprite):
                     self.rect.x += self.speed_x/2
 
 
-        if target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80 and not self.see_target:
+        if target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80 and self.see_target:
             if self.onGround:
                 self.rect.y -= 10
                 self.speed_y -= 12
@@ -223,13 +234,32 @@ class Weapon(GameSprite):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.extended = False
+        self.original_image = self.image
+        self.hidet_image = flip(self.original_image, True, True)
+        self.attack_image = transform.rotate(self.original_image, -10)
 
     def update(self, owner):
         if self.extended:
-            self.rect.x = owner.rect.x + 45
-            self.rect.y = owner.rect.y - 10
+            self.image = self.attack_image
+            self.rect = self.image.get_rect(center = owner.rect.center)
+
+            mouse_button = mouse.get_pressed()
+            if mouse_button[0]:
+                mouse_pos = mouse.get_pos()
+
+                angle = math.atan2(mouse_pos[1] - owner.rect.centery, mouse_pos[0] - owner.rect.centerx)
+                angle = math.degrees(angle)
+                if angle > -70 and angle < 115:
+                    self.image = transform.rotate(self.attack_image, -angle)
+                    self.rect = self.image.get_rect(center = owner.rect.center)
+
+            self.rect.x = owner.rect.x + 40
+            self.rect.y = owner.rect.y
+
         else:
-            self.rect.x = owner.rect.x + 45
+            self.image = self.hidet_image
+
+            self.rect.x = owner.rect.x + 40
             self.rect.y = owner.rect.y
 
     def attack(self, attack_path, attack_damage):
@@ -263,8 +293,6 @@ start_time_create = False
 player_run = False
 
 all_obj = sprite.Group()
-
-mixer.init()
 
 bg_images = []
 bg_tower_images = []

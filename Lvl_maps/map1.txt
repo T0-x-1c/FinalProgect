@@ -9,5 +9,5 @@
                      QGE
                      LNR                         G
  QGE         QGGGE   LNR                         G
- LNR         LNNNR   LNR      Z                 GG
+ LNR    Z    LNNNR   LNR      Z                 GG
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG

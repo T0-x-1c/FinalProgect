@@ -28,6 +28,17 @@ btn_quit = Button('Pict/Menu/quit_btn.png', 100, 370, 200, 50)
 '''кнопки в налаштуваннях'''
 btn_back = Button('Pict/Menu/back_btn.png', 70, 70, 90, 80)
 
+'''об'єкти для налаштувань'''
+music_loudness = Slider(window, 660, 100, 150, 5, min=0, max=1, step=0.01, handleColour = (180, 245, 245), handleRadius=8)
+music_loudness.setValue(settings["music_loudness"])
+music_output = TextBox(window, 660, 130, 50, 30, fontSize=20)
+music_output.disable()
+
+game_sound_loudness = Slider(window, 660, 220, 150, 5, min=0, max=1, step=0.01, handleColour = (180, 245, 245), handleRadius=8)
+game_sound_loudness.setValue(settings["game_sound_loudness"])
+game_sound_output = TextBox(window, 660, 250, 50, 30, fontSize=20)
+game_sound_output.disable()
+
 '''кнопки вибору рівня'''
 
 btn_lvl_1 = Button('Pict/Lvl_selection/btn_lvl1.png', 60, 58, 80, 80)
@@ -62,9 +73,10 @@ creak = mixer.Sound('Sound/Game/creak.mp3')
 player_walk_grass = mixer.Sound('Sound/Game/walk_grass.flac')
 
 '''тексти'''
-font.init()
 font1 = font.SysFont('Comic Sans', 18)
 
+txt_loudness_music = font1.render("гучність музики :", True, (180, 245, 245))
+txt_game_sound = font1.render("гучність звуків гри :", True, (180, 245, 245))
 
 '''читання і побудова рівнів'''
 
