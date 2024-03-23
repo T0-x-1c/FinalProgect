@@ -45,26 +45,27 @@ while Game:
 
             for monster in monsters:
                 monster.reset()
-                monster.update(target=player, ground=grounds)
+                monster.update(target=player, ground=grounds, attack_sound = monster_attack)
 
 
         if not katana.extended:
             katana.reset()
 
         player.reset()
-        player.update(ground=grounds)
+        player.update(ground=grounds, sound_walk=player_walk_grass)
+
 
         if katana.extended:
             katana.reset()
-        katana.update(owner=player)
+        katana.update(owner=player, attack_sound=attack_katana_sound)
 
         for attack in attacks:
             attack.reset()
         attacks.update()
 
-        if sprite.groupcollide(attacks, monsters, True, False):
-            for monster in monsters:
-                monster.hp -= attack.damage
+        attack_monsters = sprite.groupcollide(monsters, attacks, False, True)
+        for monster in attack_monsters:
+            monster.hp -= attack.damage
 
 
     if screen == "lvl_selection":

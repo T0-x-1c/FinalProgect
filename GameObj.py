@@ -72,6 +72,11 @@ creak = mixer.Sound('Sound/Game/creak.mp3')
 
 player_walk_grass = mixer.Sound('Sound/Game/walk_grass.flac')
 
+monster_attack_sound = mixer.Sound('Sound/Game/attack_monster.flac')
+walk_player_sound = mixer.Sound('Sound/Game/walk_grass.flac')
+attack_katana_sound = mixer.Sound('Sound/Game/attack_katana.flac')
+
+
 '''тексти'''
 font1 = font.SysFont('Comic Sans', 18)
 
@@ -106,7 +111,7 @@ def creation_lvl():
                     grounds_bg.add(GameSprite("Pict/Lvl_sprite/ground_empty.png", x, y, 50, 50))
 
                 elif symbol == 'Z':
-                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, True))
+                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, True))
 
                 x += 50
             y += 50

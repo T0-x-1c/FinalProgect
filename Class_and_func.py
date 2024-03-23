@@ -1,4 +1,3 @@
-import mouse
 import pygame
 from pygame import *
 from pygame.transform import scale, flip
@@ -85,7 +84,7 @@ class Player(GameSprite):
         self.onGround = onGround
 
 
-    def update(self, ground):
+    def update(self, ground, sound_walk):
         key_pressed = key.get_pressed()
 
         colide_list = sprite.spritecollide(self, ground, False)
@@ -110,6 +109,10 @@ class Player(GameSprite):
             if self.rect.x < 840:
                 self.rect.x += self.speed_x
 
+            if self.onGround:
+                if sound_walk.get_num_channels() < 1:
+                    sound_walk.play()
+
         elif key_pressed[K_a]:
             if self.rect.x < 220:
                 if scroll_x > 0:
@@ -123,6 +126,9 @@ class Player(GameSprite):
             if self.rect.x > 0:
                 self.rect.x -= self.speed_x
 
+            if self.onGround:
+                if sound_walk.get_num_channels() < 1:
+                    sound_walk.play()
 
         if not self.onGround:
             self.speed_y += 0.5
@@ -139,10 +145,11 @@ class Player(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
+        # if self.hp <= 0:
+        #     self.kill()
+
     def damage(self, attack):
-        self.hp -= attack.damage
-
-
+        self.hp -= attack.damaged
 
 class Button():
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
@@ -169,7 +176,7 @@ class Button():
             self.reset()
 
 class Monster(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, onGround, see_target = False):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, onGround, damage ,see_target = False):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.hp = hp
@@ -179,9 +186,10 @@ class Monster(GameSprite):
         self.default_pos_x = self.rect.x
         self.default_pos_y = self.rect.y
         self.see_target = see_target
+        self.damage = damage
 
 
-    def update(self, target, ground):
+    def update(self, target, ground, attack_sound):
         colide_list = sprite.spritecollide(self, ground, False)
         for grd in colide_list:
             if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
@@ -226,8 +234,17 @@ class Monster(GameSprite):
                 self.speed_y -= 12
                 self.onGround = False
 
+
+        if self.rect.colliderect(target):
+            if attack_sound.get_num_channels() < 1:
+                attack_sound.play()
+                target.hp -= self.damage
+                print("ssss")
+
+
         if self.hp <= 0:
             self.kill()
+
 
 class Weapon(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
@@ -238,18 +255,19 @@ class Weapon(GameSprite):
         self.hidet_image = flip(self.original_image, True, True)
         self.attack_image = transform.rotate(self.original_image, -10)
 
-    def update(self, owner):
+    def update(self, owner, attack_sound):
         if self.extended:
             self.image = self.attack_image
             self.rect = self.image.get_rect(center = owner.rect.center)
 
             mouse_button = mouse.get_pressed()
-            if mouse_button[0]:
+            if mouse_button[0] and attack_sound.get_num_channels() < 1:
+                attack_sound.play()
                 mouse_pos = mouse.get_pos()
 
                 angle = math.atan2(mouse_pos[1] - owner.rect.centery, mouse_pos[0] - owner.rect.centerx)
                 angle = math.degrees(angle)
-                if angle > -70 and angle < 115:
+                if angle > -50 and angle < 115:
                     self.image = transform.rotate(self.attack_image, -angle)
                     self.rect = self.image.get_rect(center = owner.rect.center)
 
@@ -261,6 +279,9 @@ class Weapon(GameSprite):
 
             self.rect.x = owner.rect.x + 40
             self.rect.y = owner.rect.y
+
+
+
 
     def attack(self, attack_path, attack_damage):
         attack = Attack(attack_path, self.rect.x, self.rect.y, 48, 48, attack_damage)
