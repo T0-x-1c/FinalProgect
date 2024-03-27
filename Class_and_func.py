@@ -7,12 +7,20 @@ from time import time as timer
 import pygame_widgets
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
+import os
 import json
 import math
 
 init()
 font.init()
 mixer.init()
+
+#читання json
+with open('Json/Lvl_info.json', 'r', encoding='utf-8') as set_file:
+    lvl_info = json.load(set_file)
+
+with open('Json/setting.json', 'r', encoding='utf-8') as set_file:
+    settings = json.load(set_file)
 
 '''створення екрану'''
 win_width, win_height = 900, 550
@@ -27,15 +35,43 @@ loading_image = bg_menu = scale(load('Pict/Loading/loading_image.png'), (win_wid
 window.blit(loading_image, (0,0))
 display.update()
 
-'''функції'''
+'''змінні для роботи программи та функцій'''
 
-#читання json
-with open('Json/Lvl_info.json', 'r', encoding='utf-8') as set_file:
-    lvl_info = json.load(set_file)
+monsters = sprite.Group()
+grounds = sprite.Group()
+grounds_bg = sprite.Group()
+doors = sprite.Group()
+attacks = sprite.Group()
 
-with open('Json/setting.json', 'r', encoding='utf-8') as set_file:
-    settings = json.load(set_file)
+global scroll_x
+scroll_x = 0
 
+screen = "menu"
+
+playing_bg_music = False
+
+start_time_create = False
+
+player_run = False
+
+all_obj = sprite.Group()
+
+bg_images = []
+bg_tower_images = []
+
+for i in range(1, 6):
+    bg_image = image.load(f"Pict/BackGround/Game/bg_{i}.png").convert_alpha()
+    bg_images.append(bg_image)
+
+for i in range(1, 3):
+    bg_tower_image = scale(image.load(f"Pict/BackGround/Game/bg_game{i}.png"), (win_width, win_height)).convert_alpha()
+    bg_tower_images.append(bg_tower_image)
+
+    for x in range(5):
+        speed = 1
+        for bg in bg_images:
+            window.blit(bg, ((x * win_width) - scroll_x * speed, -50))
+            speed += 0.2
 def draw_bg():
     for x in range(5):
         speed = 1
@@ -48,6 +84,29 @@ def draw_tow_bg():
         for bg in bg_tower_images:
             window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
             speed += 1
+
+def back_to_0lvl(list_obj_0lvl, creak_s, player):
+    creak_s.play()
+    lvl_info["current_level"] = 'map0'
+    player.rect.x, player.rect.y = 250, 400
+    global scroll_x
+    for obj in list_obj_0lvl:
+        obj.rect.x += scroll_x
+
+    scroll_x = 0
+
+def load_images_from_folder(folder, width, height):
+    images = []
+    # Перебираємо усі файли у папці
+    for filename in os.listdir(folder):
+        # Завантажуємо кожне зображення
+        img = image.load(os.path.join(folder, filename))
+        # Перевіряємо, чи завантажено зображення
+        if img is not None:
+            images.append(transform.scale(img, (width, height)))  # Додаємо зображення до списку і змінюємо їх розмір
+    return images  # Повертаємо список зображень
+
+player_images = {}  # Словник для зберігання зображень анімації
 
 '''класи'''
 
@@ -62,6 +121,8 @@ class GameSprite(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
+
+        self.direction = None
 
         all_obj.add(self)
 
@@ -96,6 +157,17 @@ class Player(GameSprite):
         if colide_list == []:
             self.onGround = False
 
+        if key_pressed[K_SPACE]:
+            if self.onGround:
+                self.rect.y -= 10
+                self.speed_y -= 12
+                self.onGround = False
+
+                self.direction = 'up'
+
+        else:
+            self.direction = None
+
         if key_pressed[K_d]:
             global scroll_x
             if self.rect.x > 600 and scroll_x < 370:
@@ -112,6 +184,8 @@ class Player(GameSprite):
             if self.onGround:
                 if sound_walk.get_num_channels() < 1:
                     sound_walk.play()
+
+            self.direction = 'right'
 
         elif key_pressed[K_a]:
             if self.rect.x < 220:
@@ -130,20 +204,18 @@ class Player(GameSprite):
                 if sound_walk.get_num_channels() < 1:
                     sound_walk.play()
 
+            self.direction = 'left'
+
+        else:
+            self.direction = None
+
         if not self.onGround:
             self.speed_y += 0.5
 
             self.rect.y += self.speed_y
-            global scroll_y
             if self.rect.y > 600:
                 self.rect.y = 300
                 self.speed_y = 0
-
-        if key_pressed[K_SPACE]:
-            if self.onGround:
-                self.rect.y -= 10
-                self.speed_y -= 12
-                self.onGround = False
 
         # if self.hp <= 0:
         #     self.kill()
@@ -261,10 +333,12 @@ class Weapon(GameSprite):
             self.rect = self.image.get_rect(center = owner.rect.center)
 
             mouse_button = mouse.get_pressed()
-            if mouse_button[0] and attack_sound.get_num_channels() < 1:
-                attack_sound.play()
-                mouse_pos = mouse.get_pos()
+            if mouse_button[0]:
+                if attack_sound.get_num_channels() < 1:
+                    self.attack("Pict/Player/weapon/katana/attack_2.png", 3)
+                    attack_sound.play()
 
+                mouse_pos = mouse.get_pos()
                 angle = math.atan2(mouse_pos[1] - owner.rect.centery, mouse_pos[0] - owner.rect.centerx)
                 angle = math.degrees(angle)
                 if angle > -50 and angle < 115:
@@ -294,34 +368,3 @@ class Attack(GameSprite):
         self.damage = damage
     def update(self):
         self.rect.x -= 10
-
-
-'''змінні для роботи программи та функцій'''
-monsters = sprite.Group()
-grounds = sprite.Group()
-grounds_bg = sprite.Group()
-attacks = sprite.Group()
-
-scroll_x = 0
-scroll_y = 0
-
-screen = "menu"
-
-playing_bg_music = False
-
-start_time_create = False
-
-player_run = False
-
-all_obj = sprite.Group()
-
-bg_images = []
-bg_tower_images = []
-
-for i in range(1, 6):
-    bg_image = image.load(f"Pict/BackGround/Game/bg_{i}.png").convert_alpha()
-    bg_images.append(bg_image)
-
-for i in range(1, 3):
-    bg_tower_image = scale(image.load(f"Pict/BackGround/Game/bg_game{i}.png"), (win_width, win_height)).convert_alpha()
-    bg_tower_images.append(bg_tower_image)

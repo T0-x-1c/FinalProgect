@@ -13,9 +13,6 @@ while Game:
         for e in event.get():
             if e.type == QUIT:
                 Game = False
-            if e.type == MOUSEBUTTONDOWN:
-                if e.button == 1 and katana.extended:
-                    katana.attack("Pict/Player/weapon/katana/attack_2.png", 3)
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
                     creak.play()
@@ -24,8 +21,7 @@ while Game:
                     katana.extended = True
                 elif e.key == K_1 and katana.extended:
                     katana.extended = False
-
-
+        print(scroll_x)
         if lvl_info["current_level"] == "map0":
             draw_bg()
             shop.reset()
@@ -45,7 +41,22 @@ while Game:
 
             for monster in monsters:
                 monster.reset()
-                monster.update(target=player, ground=grounds, attack_sound = monster_attack)
+                monster.update(target=player, ground=grounds, attack_sound = monster_attack_sound)
+
+            for door in doors:
+                door.reset()
+                if player.rect.colliderect(door):
+                    door.change_foto('Pict/Lvl_sprite/door_open.png')
+                    hint = font1.render("Press 'e' to get out", True, (180, 245, 245))
+                    window.blit(hint, (door.rect.x - 50, door.rect.y - 40))
+                    key_pressed = key.get_pressed()
+                    if key_pressed[K_e]:
+                        creation_lvl()
+                        back_to_0lvl([tower,shop], creak, player)
+
+
+                else:
+                    door.change_foto('Pict/Lvl_sprite/door_close.png')
 
 
         if not katana.extended:

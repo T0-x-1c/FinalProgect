@@ -87,6 +87,10 @@ txt_game_sound = font1.render("гучність звуків гри :", True, (1
 
 def creation_lvl():
     grounds.empty()
+    grounds_bg.empty()
+    doors.empty()
+    monsters.empty()
+    attacks.empty()
     with open(f'Lvl_maps/{lvl_info["current_level"]}.txt', 'r') as file:
         x, y = -50, -100
         map = file.readlines()
@@ -96,8 +100,8 @@ def creation_lvl():
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
                 elif symbol == 'T':
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
-                elif symbol == 'D':
-                    grounds.add(GameSprite("Pict/Lvl_sprite/dirt.jpeg", x, y, 50, 50))
+                # elif symbol == 'D':
+                #     grounds.add(GameSprite("Pict/Lvl_sprite/dirt.jpeg", x, y, 50, 50))
                 elif symbol == 'E':
                     grounds.add(GameSprite("Pict/Lvl_sprite/right_corner.png", x, y, 50, 50))
                 elif symbol == 'Q':
@@ -109,6 +113,9 @@ def creation_lvl():
                     grounds_bg.add(GameSprite("Pict/Lvl_sprite/left_wall.png", x, y, 50, 50))
                 elif symbol == 'N':
                     grounds_bg.add(GameSprite("Pict/Lvl_sprite/ground_empty.png", x, y, 50, 50))
+
+                elif symbol == "D":
+                    doors.add(GameSprite("Pict/Lvl_sprite/door_close.png", x, y, 65, 100))
 
                 elif symbol == 'Z':
                     monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, True))

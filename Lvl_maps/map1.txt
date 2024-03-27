@@ -8,6 +8,6 @@
 
                      QGE
                      LNR                         G
- QGE         QGGGE   LNR                         G
- LNR    Z    LNNNR   LNR      Z                 GG
+ QGE         QGGGE   LNR                   D     G
+ LNR    Z    LNNNR   LNR      Z                  G
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
