@@ -13,7 +13,19 @@ def load_images_from_folder(folder, width, height):
     return images  # Повертаємо список зображень
 
 player_images = {
-    "jump": load_images_from_folder("Pict/Player/Jump", 70, 70),
     "run": load_images_from_folder("Pict/Player/Run", 70, 70),
-    "stay": load_images_from_folder("Pict/Player/stay", 70, 70)
+    "stay": load_images_from_folder("Pict/Player/Stay", 70, 70),
+    "jump": load_images_from_folder("Pict/Player/Jump", 70, 70),
+}
+
+zombie_images = {
+    "run": load_images_from_folder("Pict/Monsters/Zombie/Run", 58, 66),
+    "stay": load_images_from_folder("Pict/Monsters/Zombie/Stay", 58, 66)
+}
+skeleton_images = {
+    "run": load_images_from_folder("Pict/Monsters/Skeleton/Run", 64, 64),
+    "stay": load_images_from_folder("Pict/Monsters/Skeleton/Stay", 64, 64)
+}
+bat_images = {
+    "run": load_images_from_folder("Pict/Monsters/Bat", 32, 32)
 }

@@ -3,6 +3,7 @@ from GameObj import *
 import pygame
 from pygame import *
 import pygame_widgets
+import sys
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
 import json
@@ -13,6 +14,7 @@ while Game:
         for e in event.get():
             if e.type == QUIT:
                 Game = False
+                sys.exit()
             if e.type == KEYDOWN:
                 if e.key == K_e and close_dor.rect.colliderect(player):
                     creak.play()
@@ -42,6 +44,7 @@ while Game:
             for monster in monsters:
                 monster.reset()
                 monster.update(target=player, ground=grounds, attack_sound = monster_attack_sound)
+                monster.animated()
 
             for door in doors:
                 door.reset()
@@ -64,7 +67,7 @@ while Game:
 
         player.reset()
         player.update(ground=grounds, sound_walk=player_walk_grass)
-
+        player.animated()
 
         if katana.extended:
             katana.reset()
@@ -77,7 +80,6 @@ while Game:
         attack_monsters = sprite.groupcollide(monsters, attacks, False, True)
         for monster in attack_monsters:
             monster.hp -= attack.damage
-
 
     if screen == "lvl_selection":
         for e in event.get():
@@ -107,6 +109,7 @@ while Game:
         for e in event.get():
             if e.type == QUIT:
                 Game = False
+                sys.exit()
 
             if e.type == MOUSEBUTTONDOWN:
                 mouse_click = e.pos
@@ -121,6 +124,7 @@ while Game:
                 if btn_quit.rect.collidepoint(mouse_click):
                     click_sound.play()
                     Game = False
+                    sys.exit()
 
         window.blit(bg_menu, (0, 0))
 
@@ -138,6 +142,7 @@ while Game:
         for e in event.get():
             if e.type == QUIT:
                 Game = False
+                sys.exit()
             if e.type == MOUSEBUTTONDOWN:
                 mouse_click = e.pos
                 if btn_back.rect.collidepoint(mouse_click):

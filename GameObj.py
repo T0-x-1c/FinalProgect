@@ -128,11 +128,11 @@ def creation_lvl():
                     doors.add(GameSprite("Pict/Lvl_sprite/door_close.png", x, y, 65, 100))
 
                 elif symbol == 'Z':
-                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, 'earthly', False))
+                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, 'earthly', "zombie",False))
                 elif symbol == 'S':
-                    monsters.add(Monster("Pict/Monsters/Skeleton/Stay/skeleton_stay1.png", x, y-15, 48, 66, 2, 0, 5, 2, 'earthly', False))
+                    monsters.add(Monster("Pict/Monsters/Skeleton/Stay/skeleton_stay1.png", x, y-15, 64, 64, 2, 0, 5, 2, 'earthly', "skeleton",False))
                 elif symbol == 'B':
-                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 5, 2, 'flying', False))
+                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 5, 2, 'flying', "bat",False))
 
                 x += 50
             y += 50

@@ -10,7 +10,7 @@ from pygame_widgets.textbox import TextBox
 import os
 import json
 import math
-from Animation import player_images
+from Animation import player_images, zombie_images, skeleton_images, bat_images
 
 init()
 font.init()
@@ -102,19 +102,6 @@ def back_to_0lvl(list_obj_0lvl, creak_s, player):
 
     scroll_x = 0
 
-def load_images_from_folder(folder, width, height):
-    images = []
-    # Перебираємо усі файли у папці
-    for filename in os.listdir(folder):
-        # Завантажуємо кожне зображення
-        img = image.load(os.path.join(folder, filename))
-        # Перевіряємо, чи завантажено зображення
-        if img is not None:
-            images.append(transform.scale(img, (width, height)))  # Додаємо зображення до списку і змінюємо їх розмір
-    return images  # Повертаємо список зображень
-
-player_images = {}  # Словник для зберігання зображень анімації
-
 '''класи'''
 
 #основний клас
@@ -152,6 +139,10 @@ class Player(GameSprite):
         self.speed_y = player_speed_y
         self.onGround = onGround
 
+        self.images = player_images
+        self.index = 0
+        self.frame_count = 0
+        self.max_frame_count = 8
 
     def update(self, ground, sound_walk):
         key_pressed = key.get_pressed()
@@ -232,8 +223,39 @@ class Player(GameSprite):
         # if self.hp <= 0:
         #     self.kill()
 
-    # def animated(self):
-    #
+    def animated(self):
+        # print(self.lastDirection, self.direction)
+        self.frame_count += 1
+
+        if self.frame_count >= self.max_frame_count:
+            if self.direction == 'up':
+                if self.index >= len(player_images["jump"]):
+                    self.index = 0
+                self.image = player_images["jump"][self.index]
+
+            elif self.direction == 'right':
+                if self.index >= len(player_images["run"]):
+                    self.index = 0
+                self.image = player_images["run"][self.index]
+
+            elif self.direction == 'left':
+                if self.index >= len(player_images["run"]):
+                    self.index = 0
+                self.image = transform.flip(player_images["run"][self.index], True, False)
+
+
+            elif self.direction == None and self.lastDirection == "right":
+                if self.index >= len(player_images["stay"]):
+                    self.index = 0
+                self.image = player_images["stay"][self.index]
+            elif self.direction == None and self.lastDirection == 'left':
+                if self.index >= len(player_images["stay"]):
+                    self.index = 0
+                self.image = transform.flip(player_images["stay"][self.index], True, False)
+
+            self.index += 1
+
+            self.frame_count = 0
 
     def damage(self, attack):
         self.hp -= attack.damaged
@@ -263,7 +285,7 @@ class Button():
             self.reset()
 
 class Monster(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, damage, type, see_target = False):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, damage, type, personality, see_target = False):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.hp = hp
@@ -275,10 +297,14 @@ class Monster(GameSprite):
         self.see_target = see_target
         self.damage = damage
         self.type = type
+        self.personality = personality
 
         self.direction = 'right'
 
-        print( self.hp, self.speed_x,self.speed_y,self.onGround,self.default_pos_x,self.default_pos_y,self.see_target,self.damage,self.type,)
+        self.images = zombie_images
+        self.index = 0
+        self.frame_count = 0
+        self.max_frame_count = 8
 
     def update(self, target, ground, attack_sound):
         colide_list = sprite.spritecollide(self, ground, False)
@@ -307,14 +333,17 @@ class Monster(GameSprite):
                 global start_time_create
                 start_time_create = False
                 self.see_target = True
+                self.direction = 'right'
 
             elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300:
                 self.rect.x -= self.speed_x
                 start_time_create = False
                 self.see_target = True
+                self.direction = 'left'
 
             else:
                 self.see_target = False
+                self.direction = None
                 if not start_time_create:
                     global start_time
                     start_time = timer()
@@ -322,15 +351,22 @@ class Monster(GameSprite):
                 if start_time - timer() <= -2:
                     if self.rect.x > self.default_pos_x:
                         self.rect.x -= self.speed_x / 2
+                        self.direction = 'left'
                     elif self.rect.x < self.default_pos_x:
                         self.rect.x += self.speed_x / 2
+                        self.direction = 'right'
+
+            if self.rect.x == self.default_pos_x:
+                self.direction = None
 
         elif self.type == 'flying':
             if self.hp <= 2:
                 if self.rect.centerx <= target.rect.centerx:
                     self.rect.x += self.speed_x
+                    self.direction = 'right'
                 if self.rect.centerx >= target.rect.centerx:
                     self.rect.x -= self.speed_x
+                    self.direction = 'left'
                 if self.rect.centery < target.rect.centery:
                     self.rect.y += self.speed_x
                 if self.rect.centery > target.rect.centery:
@@ -338,7 +374,6 @@ class Monster(GameSprite):
             else:
                 pos_1 = self.default_pos_x - 75
                 pos_2 = self.default_pos_x + 75
-                print(pos_2, self.default_pos_x)
 
                 if self.direction == 'right':
                     self.rect.x += self.speed_x
@@ -348,7 +383,6 @@ class Monster(GameSprite):
                     self.rect.x -= self.speed_x
                     if self.rect.x <= pos_1:
                         self.direction = 'right'
-
 
 
         if self.rect.colliderect(target):
@@ -361,6 +395,65 @@ class Monster(GameSprite):
             self.kill()
 
 
+    def animated(self):
+        if self.personality == "zombie":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == 'right':
+                    if self.index >= len(zombie_images["run"]):
+                        self.index = 0
+                    self.image = zombie_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(zombie_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(zombie_images["run"][self.index], True, False)
+
+
+                elif self.direction == None:
+                    if self.index >= len(zombie_images["stay"]):
+                        self.index = 0
+                    self.image = zombie_images["stay"][self.index]
+
+                self.index += 1
+
+                self.frame_count = 0
+
+        elif self.personality == "skeleton":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == 'right':
+                    if self.index >= len(skeleton_images["run"]):
+                        self.index = 0
+                    self.image = skeleton_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(skeleton_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(skeleton_images["run"][self.index], True, False)
+
+                elif self.direction == None:
+                    if self.index >= len(skeleton_images["stay"]):
+                        self.index = 0
+                    self.image = skeleton_images["stay"][self.index]
+
+                self.index += 1
+
+                self.frame_count = 0
+
+        elif self.personality == "bat":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == 'right':
+                    if self.index >= len(bat_images["run"]):
+                        self.index = 0
+                    self.image = bat_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(bat_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(bat_images["run"][self.index], True, False)
+
 class Weapon(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
@@ -369,11 +462,19 @@ class Weapon(GameSprite):
         self.original_image = self.image
         self.hidet_image = flip(self.original_image, True, True)
         self.attack_image = transform.rotate(self.original_image, -10)
+        self.handle_center = (self.rect.centerx - 20, self.rect.bottom)
 
     def update(self, owner, attack_sound):
         if self.extended:
-            self.image = self.attack_image
-            self.rect = self.image.get_rect(center = owner.rect.center)
+            if owner.lastDirection == 'left':
+                self.image = transform.flip(self.attack_image, True, False)
+
+            elif owner.lastDirection == 'right':
+                self.image = self.attack_image
+
+            angle = -40
+
+            self.rect = self.image.get_rect(center = self.rect.center)
 
             mouse_button = mouse.get_pressed()
             if mouse_button[0]:
@@ -381,23 +482,28 @@ class Weapon(GameSprite):
                     self.attack("Pict/Player/weapon/katana/attack_2.png", 3)
                     attack_sound.play()
 
-                mouse_pos = mouse.get_pos()
-                angle = math.atan2(mouse_pos[1] - owner.rect.centery, mouse_pos[0] - owner.rect.centerx)
-                angle = math.degrees(angle)
-                if angle > -50 and angle < 115:
-                    self.image = transform.rotate(self.attack_image, -angle)
-                    self.rect = self.image.get_rect(center = owner.rect.center)
+                if owner.lastDirection == 'left':
+                    self.image = transform.flip(transform.rotate(self.attack_image, angle), True, False)
+                elif owner.lastDirection == 'right':
+                    self.image = transform.rotate(self.attack_image, angle)
 
-            self.rect.x = owner.rect.x + 40
+                self.rect = self.image.get_rect(center = self.handle_center)
+
+            if owner.lastDirection == 'left':
+                self.rect.x = owner.rect.x + 12
+            else:
+                self.rect.x = owner.rect.x + 40
+
             self.rect.y = owner.rect.y
 
         else:
             self.image = self.hidet_image
 
-            self.rect.x = owner.rect.x + 40
+            if owner.lastDirection == 'left':
+                self.rect.x = owner.rect.x + 20
+            else:
+                self.rect.x = owner.rect.x + 40
             self.rect.y = owner.rect.y
-
-
 
 
     def attack(self, attack_path, attack_damage):
@@ -412,22 +518,20 @@ class Attack(GameSprite):
         self.primary_posx = self.rect.x
         self.primary_posy = self.rect.y
     def update(self,owner):
-        if owner.lastDirection == "left":
+        if self.direction == None:
+            self.direction = owner.lastDirection
+            print(self.direction)
+        if self.direction == "left":
+            self.image = transform.flip(scale(load('Pict/Player/weapon/katana/attack_2.png'), (self.player_width, self.player_height)), True, False)
             self.rect.x -= 10
-            self.direction = 'left'
             if self.primary_posx - self.rect.x >= 120:
                 self.kill()
-        elif owner.lastDirection == 'right':
+        elif self.direction == 'right':
             self.rect.x += 10
-            self.direction = 'right'
             if self.rect.x - self.primary_posx >= 120:
                 self.kill()
-        elif owner.lastDirection == 'up':
+        elif self.direction == 'up':
+            self.image = transform.rotate(scale(load('Pict/Player/weapon/katana/attack_2.png'), (self.player_width, self.player_height)), 90)
             self.rect.y -= 10
-            self.direction = 'up'
             if self.primary_posy - self.rect.y >= 120:
                 self.kill()
-
-
-
-
