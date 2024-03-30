@@ -86,6 +86,7 @@ txt_game_sound = font1.render("гучність звуків гри :", True, (1
 '''читання і побудова рівнів'''
 
 def creation_lvl():
+    print("creating level :", lvl_info["current_level"])
     grounds.empty()
     grounds_bg.empty()
     doors.empty()
@@ -107,18 +108,31 @@ def creation_lvl():
                 elif symbol == 'Q':
                     grounds.add(GameSprite("Pict/Lvl_sprite/left_corner.png", x, y, 50, 50))
 
+                elif symbol == 'Y':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/hanging_ground_left.png", x, y, 50, 50))
+                elif symbol == 'U':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/hanging_ground.png", x, y, 50, 50))
+                elif symbol == 'I':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/hanging_ground_right.png", x, y, 50, 50))
+
                 elif symbol == 'R':
                     grounds_bg.add(GameSprite("Pict/Lvl_sprite/right_wall.png", x, y, 50, 50))
                 elif symbol == 'L':
                     grounds_bg.add(GameSprite("Pict/Lvl_sprite/left_wall.png", x, y, 50, 50))
                 elif symbol == 'N':
                     grounds_bg.add(GameSprite("Pict/Lvl_sprite/ground_empty.png", x, y, 50, 50))
+                elif symbol == 'C':
+                    grounds_bg.add(GameSprite("Pict/Lvl_sprite/chain.png", x, y, 50, 50))
 
                 elif symbol == "D":
                     doors.add(GameSprite("Pict/Lvl_sprite/door_close.png", x, y, 65, 100))
 
                 elif symbol == 'Z':
-                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, True))
+                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, 'earthly', False))
+                elif symbol == 'S':
+                    monsters.add(Monster("Pict/Monsters/Skeleton/Stay/skeleton_stay1.png", x, y-15, 48, 66, 2, 0, 5, 2, 'earthly', False))
+                elif symbol == 'B':
+                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 5, 2, 'flying', False))
 
                 x += 50
             y += 50

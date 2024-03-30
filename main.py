@@ -21,7 +21,7 @@ while Game:
                     katana.extended = True
                 elif e.key == K_1 and katana.extended:
                     katana.extended = False
-        print(scroll_x)
+
         if lvl_info["current_level"] == "map0":
             draw_bg()
             shop.reset()
@@ -51,8 +51,8 @@ while Game:
                     window.blit(hint, (door.rect.x - 50, door.rect.y - 40))
                     key_pressed = key.get_pressed()
                     if key_pressed[K_e]:
+                        back_to_0lvl([tower,shop, close_dor, open_dor], creak, player)
                         creation_lvl()
-                        back_to_0lvl([tower,shop], creak, player)
 
 
                 else:
@@ -72,7 +72,7 @@ while Game:
 
         for attack in attacks:
             attack.reset()
-        attacks.update()
+        attacks.update(owner = player)
 
         attack_monsters = sprite.groupcollide(monsters, attacks, False, True)
         for monster in attack_monsters:

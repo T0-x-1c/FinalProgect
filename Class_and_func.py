@@ -10,6 +10,7 @@ from pygame_widgets.textbox import TextBox
 import os
 import json
 import math
+from Animation import player_images
 
 init()
 font.init()
@@ -72,6 +73,10 @@ for i in range(1, 3):
         for bg in bg_images:
             window.blit(bg, ((x * win_width) - scroll_x * speed, -50))
             speed += 0.2
+
+def save_lvl_info():
+    with open('Json/Lvl_info.json', 'w', encoding='utf-8') as set_file:
+        json.dump(lvl_info, set_file, ensure_ascii=False, sort_keys=True, indent=4)
 def draw_bg():
     for x in range(5):
         speed = 1
@@ -87,11 +92,13 @@ def draw_tow_bg():
 
 def back_to_0lvl(list_obj_0lvl, creak_s, player):
     creak_s.play()
-    lvl_info["current_level"] = 'map0'
+    lvl_info["current_level"] = "map0"
+    save_lvl_info()
+    print(lvl_info["current_level"])
     player.rect.x, player.rect.y = 250, 400
     global scroll_x
     for obj in list_obj_0lvl:
-        obj.rect.x += scroll_x
+        obj.rect.x += scroll_x * 4
 
     scroll_x = 0
 
@@ -123,6 +130,7 @@ class GameSprite(sprite.Sprite):
         self.rect.y = player_y
 
         self.direction = None
+        self.lastDirection = self.direction
 
         all_obj.add(self)
 
@@ -150,9 +158,10 @@ class Player(GameSprite):
 
         colide_list = sprite.spritecollide(self, ground, False)
         for grd in colide_list:
-            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
+            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.bottom >= 500:
                 self.onGround = True
                 self.speed_y = 0
+
 
         if colide_list == []:
             self.onGround = False
@@ -160,10 +169,11 @@ class Player(GameSprite):
         if key_pressed[K_SPACE]:
             if self.onGround:
                 self.rect.y -= 10
-                self.speed_y -= 12
+                self.speed_y -= 13
                 self.onGround = False
 
                 self.direction = 'up'
+                self.lastDirection = self.direction
 
         else:
             self.direction = None
@@ -186,6 +196,7 @@ class Player(GameSprite):
                     sound_walk.play()
 
             self.direction = 'right'
+            self.lastDirection = self.direction
 
         elif key_pressed[K_a]:
             if self.rect.x < 220:
@@ -205,6 +216,7 @@ class Player(GameSprite):
                     sound_walk.play()
 
             self.direction = 'left'
+            self.lastDirection = self.direction
 
         else:
             self.direction = None
@@ -219,6 +231,9 @@ class Player(GameSprite):
 
         # if self.hp <= 0:
         #     self.kill()
+
+    # def animated(self):
+    #
 
     def damage(self, attack):
         self.hp -= attack.damaged
@@ -248,63 +263,92 @@ class Button():
             self.reset()
 
 class Monster(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, onGround, damage ,see_target = False):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, damage, type, see_target = False):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.hp = hp
         self.speed_x = speed_x
         self.speed_y = speed_y
-        self.onGround = onGround
+        self.onGround = False
         self.default_pos_x = self.rect.x
         self.default_pos_y = self.rect.y
         self.see_target = see_target
         self.damage = damage
+        self.type = type
 
+        self.direction = 'right'
+
+        print( self.hp, self.speed_x,self.speed_y,self.onGround,self.default_pos_x,self.default_pos_y,self.see_target,self.damage,self.type,)
 
     def update(self, target, ground, attack_sound):
         colide_list = sprite.spritecollide(self, ground, False)
-        for grd in colide_list:
-            if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
-                self.onGround = True
-                self.speed_y = 0
+        if self.type == 'earthly':
+            for grd in colide_list:
+                if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
+                    self.onGround = True
+                    self.speed_y = 0
 
-        if colide_list == []:
-            self.onGround = False
-
-        if not self.onGround:
-            self.speed_y += 0.5
-
-            self.rect.y += self.speed_y
-
-        if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 300:
-            self.rect.x += self.speed_x
-            global start_time_create
-            start_time_create = False
-            self.see_target = True
-
-        elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300:
-            self.rect.x -= self.speed_x
-            start_time_create = False
-            self.see_target = True
-
-        else:
-            self.see_target = False
-            if not start_time_create:
-                global start_time
-                start_time = timer()
-                start_time_create = True
-            if start_time - timer() <= -2:
-                if self.rect.x > self.default_pos_x:
-                    self.rect.x -= self.speed_x/2
-                elif self.rect.x < self.default_pos_x:
-                    self.rect.x += self.speed_x/2
-
-
-        if target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80 and self.see_target:
-            if self.onGround:
-                self.rect.y -= 10
-                self.speed_y -= 12
+            if colide_list == []:
                 self.onGround = False
+
+            if not self.onGround:
+                self.speed_y += 0.5
+
+                self.rect.y += self.speed_y
+
+            if target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80 and self.see_target:
+                if self.onGround:
+                    self.rect.y -= 10
+                    self.speed_y -= 12
+                    self.onGround = False
+
+            if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 300:
+                self.rect.x += self.speed_x
+                global start_time_create
+                start_time_create = False
+                self.see_target = True
+
+            elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300:
+                self.rect.x -= self.speed_x
+                start_time_create = False
+                self.see_target = True
+
+            else:
+                self.see_target = False
+                if not start_time_create:
+                    global start_time
+                    start_time = timer()
+                    start_time_create = True
+                if start_time - timer() <= -2:
+                    if self.rect.x > self.default_pos_x:
+                        self.rect.x -= self.speed_x / 2
+                    elif self.rect.x < self.default_pos_x:
+                        self.rect.x += self.speed_x / 2
+
+        elif self.type == 'flying':
+            if self.hp <= 2:
+                if self.rect.centerx <= target.rect.centerx:
+                    self.rect.x += self.speed_x
+                if self.rect.centerx >= target.rect.centerx:
+                    self.rect.x -= self.speed_x
+                if self.rect.centery < target.rect.centery:
+                    self.rect.y += self.speed_x
+                if self.rect.centery > target.rect.centery:
+                    self.rect.y -= self.speed_x
+            else:
+                pos_1 = self.default_pos_x - 75
+                pos_2 = self.default_pos_x + 75
+                print(pos_2, self.default_pos_x)
+
+                if self.direction == 'right':
+                    self.rect.x += self.speed_x
+                    if self.rect.x >= pos_2:
+                        self.direction = 'left'
+                elif self.direction == 'left':
+                    self.rect.x -= self.speed_x
+                    if self.rect.x <= pos_1:
+                        self.direction = 'right'
+
 
 
         if self.rect.colliderect(target):
@@ -312,7 +356,6 @@ class Monster(GameSprite):
                 attack_sound.play()
                 target.hp -= self.damage
                 print("ssss")
-
 
         if self.hp <= 0:
             self.kill()
@@ -366,5 +409,25 @@ class Attack(GameSprite):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.damage = damage
-    def update(self):
-        self.rect.x -= 10
+        self.primary_posx = self.rect.x
+        self.primary_posy = self.rect.y
+    def update(self,owner):
+        if owner.lastDirection == "left":
+            self.rect.x -= 10
+            self.direction = 'left'
+            if self.primary_posx - self.rect.x >= 120:
+                self.kill()
+        elif owner.lastDirection == 'right':
+            self.rect.x += 10
+            self.direction = 'right'
+            if self.rect.x - self.primary_posx >= 120:
+                self.kill()
+        elif owner.lastDirection == 'up':
+            self.rect.y -= 10
+            self.direction = 'up'
+            if self.primary_posy - self.rect.y >= 120:
+                self.kill()
+
+
+
+
