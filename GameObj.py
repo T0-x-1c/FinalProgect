@@ -75,6 +75,7 @@ player_walk_grass = mixer.Sound('Sound/Game/walk_grass.flac')
 monster_attack_sound = mixer.Sound('Sound/Game/attack_monster.flac')
 walk_player_sound = mixer.Sound('Sound/Game/walk_grass.flac')
 attack_katana_sound = mixer.Sound('Sound/Game/attack_katana.flac')
+bomb_explosion = mixer.Sound("Sound/Monsters/Bomb/explosion.flac")
 
 
 '''тексти'''
@@ -128,11 +129,13 @@ def creation_lvl():
                     doors.add(GameSprite("Pict/Lvl_sprite/door_close.png", x, y, 65, 100))
 
                 elif symbol == 'Z':
-                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, 'earthly', "zombie",False))
+                    monsters.add(Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", x, y-15, 58, 66, 2, 0, 5, 2, 'earthly', "zombie", 8, False))
                 elif symbol == 'S':
-                    monsters.add(Monster("Pict/Monsters/Skeleton/Stay/skeleton_stay1.png", x, y-15, 64, 64, 2, 0, 5, 2, 'earthly', "skeleton",False))
+                    monsters.add(Monster("Pict/Monsters/Skeleton/Stay/skeleton_stay1.png", x, y-15, 64, 64, 2, 0, 5, 2, 'earthly', "skeleton", 8, False))
                 elif symbol == 'B':
-                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 5, 2, 'flying', "bat",False))
+                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 5, 2, 'flying', "bat", 10, False))
+                elif symbol == 'X':
+                    monsters.add(Monster("Pict/Monsters/Bomb/Stay/bomb_stay1.png", x, y , 48, 48, 4, 0, 1, 2, 'bomb', "bomb", 4, False))
 
                 x += 50
             y += 50

@@ -41,11 +41,6 @@ while Game:
             grounds.draw(window)
             grounds_bg.draw(window)
 
-            for monster in monsters:
-                monster.reset()
-                monster.update(target=player, ground=grounds, attack_sound = monster_attack_sound)
-                monster.animated()
-
             for door in doors:
                 door.reset()
                 if player.rect.colliderect(door):
@@ -56,10 +51,11 @@ while Game:
                     if key_pressed[K_e]:
                         back_to_0lvl([tower,shop, close_dor, open_dor], creak, player)
                         creation_lvl()
-
-
                 else:
                     door.change_foto('Pict/Lvl_sprite/door_close.png')
+
+
+
 
 
         if not katana.extended:
@@ -68,6 +64,11 @@ while Game:
         player.reset()
         player.update(ground=grounds, sound_walk=player_walk_grass)
         player.animated()
+
+        for monster in monsters:
+            monster.reset()
+            monster.update(target=player, ground=grounds, attack_sound=monster_attack_sound, explosion_sound=bomb_explosion)
+            monster.animated()
 
         if katana.extended:
             katana.reset()

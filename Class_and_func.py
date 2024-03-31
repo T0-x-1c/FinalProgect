@@ -10,7 +10,7 @@ from pygame_widgets.textbox import TextBox
 import os
 import json
 import math
-from Animation import player_images, zombie_images, skeleton_images, bat_images
+from Animation import player_images, zombie_images, skeleton_images, bat_images, bomb_images
 
 init()
 font.init()
@@ -285,7 +285,7 @@ class Button():
             self.reset()
 
 class Monster(GameSprite):
-    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, damage, type, personality, see_target = False):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, speed_x, speed_y, hp, damage, type, personality,max_frame_count ,see_target = False):
         super().__init__(player_image, player_x, player_y, player_width, player_height)
 
         self.hp = hp
@@ -304,11 +304,12 @@ class Monster(GameSprite):
         self.images = zombie_images
         self.index = 0
         self.frame_count = 0
-        self.max_frame_count = 8
+        self.max_frame_count = max_frame_count
 
-    def update(self, target, ground, attack_sound):
+    def update(self, target, ground, attack_sound, explosion_sound):
         colide_list = sprite.spritecollide(self, ground, False)
         if self.type == 'earthly':
+
             for grd in colide_list:
                 if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
                     self.onGround = True
@@ -325,17 +326,17 @@ class Monster(GameSprite):
             if target.rect.y < self.rect.y and self.rect.y - target.rect.y >= 80 and self.see_target:
                 if self.onGround:
                     self.rect.y -= 10
-                    self.speed_y -= 12
+                    self.speed_y -= 11
                     self.onGround = False
 
-            if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 300:
+            if target.rect.x > self.rect.x and target.rect.x - self.rect.x <= 300 and target.rect.y - self.rect.y <= 100:
                 self.rect.x += self.speed_x
                 global start_time_create
                 start_time_create = False
                 self.see_target = True
                 self.direction = 'right'
 
-            elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300:
+            elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300 and target.rect.y - self.rect.y <= 100:
                 self.rect.x -= self.speed_x
                 start_time_create = False
                 self.see_target = True
@@ -359,7 +360,13 @@ class Monster(GameSprite):
             if self.rect.x == self.default_pos_x:
                 self.direction = None
 
+            if self.rect.colliderect(target):
+                if attack_sound.get_num_channels() < 1:
+                    attack_sound.play()
+                    target.hp -= self.damage
+
         elif self.type == 'flying':
+
             if self.hp <= 2:
                 if self.rect.centerx <= target.rect.centerx:
                     self.rect.x += self.speed_x
@@ -384,12 +391,48 @@ class Monster(GameSprite):
                     if self.rect.x <= pos_1:
                         self.direction = 'right'
 
+            if self.rect.colliderect(target):
+                if attack_sound.get_num_channels() < 1:
+                    attack_sound.play()
+                    target.hp -= self.damage
 
-        if self.rect.colliderect(target):
-            if attack_sound.get_num_channels() < 1:
-                attack_sound.play()
-                target.hp -= self.damage
-                print("ssss")
+        elif self.type == "bomb":
+
+            for grd in colide_list:
+                if self.rect.bottom >= grd.rect.top and self.rect.bottom <= grd.rect.top + 15 or self.rect.y >= 432:
+                    self.onGround = True
+                    self.speed_y = 0
+
+            if colide_list == []:
+                self.onGround = False
+
+            if not self.onGround:
+                self.speed_y += 0.5
+
+                self.rect.y += self.speed_y
+
+
+
+            if target.rect.centerx > self.rect.centerx and target.rect.centerx - self.rect.centerx <= 300 and target.rect.y - self.rect.y <= 200 and self.direction != "bang":
+                self.rect.x += self.speed_x
+                start_time_create = False
+                self.see_target = True
+                self.direction = 'right'
+
+            elif target.rect.centerx < self.rect.centerx and self.rect.centerx - target.rect.centerx <= 300 and target.rect.y - self.rect.y <= 200 and self.direction != "bang":
+                self.rect.x -= self.speed_x
+                start_time_create = False
+                self.see_target = True
+                self.direction = 'left'
+
+            else:
+                self.direction = None
+
+            if self.rect.colliderect(target):
+                self.direction = "bang"
+                if explosion_sound.get_num_channels() < 1:
+                    explosion_sound.play()
+                    target.hp -= self.damage
 
         if self.hp <= 0:
             self.kill()
@@ -416,7 +459,6 @@ class Monster(GameSprite):
                     self.image = zombie_images["stay"][self.index]
 
                 self.index += 1
-
                 self.frame_count = 0
 
         elif self.personality == "skeleton":
@@ -438,7 +480,6 @@ class Monster(GameSprite):
                     self.image = skeleton_images["stay"][self.index]
 
                 self.index += 1
-
                 self.frame_count = 0
 
         elif self.personality == "bat":
@@ -453,6 +494,36 @@ class Monster(GameSprite):
                     if self.index >= len(bat_images["run"]):
                         self.index = 0
                     self.image = transform.flip(bat_images["run"][self.index], True, False)
+
+                self.index += 1
+                self.frame_count = 0
+
+        elif self.personality == "bomb":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == "bang":
+                    if self.index >= len(bomb_images["bang"]):
+                        self.index = 0
+                        self.kill()
+                    self.image = bomb_images["bang"][self.index]
+
+                elif self.direction == 'right':
+                    if self.index >= len(bomb_images["run"]):
+                        self.index = 0
+                    self.image = bomb_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(bomb_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(bomb_images["run"][self.index], True, False)
+
+                elif self.direction == None:
+                    if self.index >= len(bomb_images["stay"]):
+                        self.index = 0
+                    self.image = bomb_images["stay"][self.index]
+
+                self.index += 1
+                self.frame_count = 0
 
 class Weapon(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
@@ -473,13 +544,12 @@ class Weapon(GameSprite):
                 self.image = self.attack_image
 
             angle = -40
-
             self.rect = self.image.get_rect(center = self.rect.center)
 
             mouse_button = mouse.get_pressed()
             if mouse_button[0]:
                 if attack_sound.get_num_channels() < 1:
-                    self.attack("Pict/Player/weapon/katana/attack_2.png", 3)
+                    self.attack("Pict/Player/weapon/katana/attack_2.png", 3, owner)
                     attack_sound.play()
 
                 if owner.lastDirection == 'left':
@@ -506,8 +576,13 @@ class Weapon(GameSprite):
             self.rect.y = owner.rect.y
 
 
-    def attack(self, attack_path, attack_damage):
-        attack = Attack(attack_path, self.rect.x, self.rect.y, 48, 48, attack_damage)
+    def attack(self, attack_path, attack_damage, player):
+        primary_pos = player.rect.x + 10
+        if player.lastDirection == 'left':
+            primary_pos = player.rect.left
+        if player.lastDirection == 'right':
+            primary_pos = player.rect.right - 10
+        attack = Attack(attack_path, primary_pos, player.rect.y, 48, 48, attack_damage)
         attacks.add(attack)
 
 class Attack(GameSprite):
@@ -520,7 +595,6 @@ class Attack(GameSprite):
     def update(self,owner):
         if self.direction == None:
             self.direction = owner.lastDirection
-            print(self.direction)
         if self.direction == "left":
             self.image = transform.flip(scale(load('Pict/Player/weapon/katana/attack_2.png'), (self.player_width, self.player_height)), True, False)
             self.rect.x -= 10

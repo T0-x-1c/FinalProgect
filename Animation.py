@@ -29,3 +29,8 @@ skeleton_images = {
 bat_images = {
     "run": load_images_from_folder("Pict/Monsters/Bat", 32, 32)
 }
+bomb_images = {
+    "run": load_images_from_folder("Pict/Monsters/Bomb/Run", 48, 48),
+    "stay": load_images_from_folder("Pict/Monsters/Bomb/Stay", 48, 48),
+    "bang": load_images_from_folder("Pict/Monsters/Bomb/Bang", 48, 48)
+}
