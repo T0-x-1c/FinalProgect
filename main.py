@@ -36,6 +36,13 @@ while Game:
             else:
                 close_dor.reset()
 
+            if player.rect.colliderect(shop):
+                hint = font1.render("Press 'e' to enter the store", True, (180, 245, 245))
+                window.blit(hint, (shop.rect.x - 20, shop.rect.y - 40))
+                key_pressed = key.get_pressed()
+                if key_pressed[K_e]:
+                    screen = "shop"
+
         else:
             draw_tow_bg()
             grounds.draw(window)
@@ -49,14 +56,12 @@ while Game:
                     window.blit(hint, (door.rect.x - 50, door.rect.y - 40))
                     key_pressed = key.get_pressed()
                     if key_pressed[K_e]:
-                        back_to_0lvl([tower,shop, close_dor, open_dor], creak, player)
+                        creak.play()
+                        back_to_0lvl([tower,shop, close_dor, open_dor], player)
                         creation_lvl()
+                        player.hp = player_info["hp"]
                 else:
                     door.change_foto('Pict/Lvl_sprite/door_close.png')
-
-
-
-
 
         if not katana.extended:
             katana.reset()
@@ -64,6 +69,24 @@ while Game:
         player.reset()
         player.update(ground=grounds, sound_walk=player_walk_grass)
         player.animated()
+        hp_table.reset()
+        score_table.reset()
+        player_hp = font1.render(f"HP: {player.hp}", True, (255,255,255))
+        window.blit(player_hp, (50,12))
+        score_txt = font1.render(f'score: {player_info["score"]}', True, (255,255,255))
+        window.blit(score_txt, (30, 60))
+
+        if player.hp <= 1:
+            hint = font1.render("Коли ваше здоров'я нижче 0 ви помераєте :)", True, (180, 245, 245))
+            window.blit(hint, (player.rect.x - 150, player.rect.y - 50))
+        if player.hp <= 0:
+            if game_over.get_num_channels() < 1:
+                game_over.play()
+                back_to_0lvl([tower, shop, close_dor, open_dor], player)
+                creation_lvl()
+                player.hp = player_info["hp"]
+
+
 
         for monster in monsters:
             monster.reset()
@@ -104,6 +127,73 @@ while Game:
 
         for btn in btn_lvl_selection:
             btn.reset()
+
+    if screen == 'shop':
+        for e in event.get():
+            if e.type == QUIT:
+                Game = False
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    creak.play()
+                    screen = "game"
+            if e.type == MOUSEBUTTONDOWN:
+                mouse_click = e.pos
+                if btn_back.rect.collidepoint(mouse_click):
+                    screen = 'game'
+
+            if e.type == MOUSEBUTTONDOWN:
+                mouse_click = e.pos
+                if btn_page_1.rect.collidepoint(mouse_click):
+                    shop_page = 1
+                elif btn_page_2.rect.collidepoint(mouse_click):
+                    shop_page = 2
+
+                if shop_lot_hp.rect.collidepoint(mouse_click):
+                    if player_info["score"] >= player_info["shop_lot_hp_price"]:
+                        player_info["hp"] += 1
+                        player_info["score"] -= player_info["shop_lot_hp_price"]
+                        player_info["shop_lot_hp_price"] = round(player_info["shop_lot_hp_price"] * 1.4)
+                        save_player_info()
+                    else:
+                        pass
+                        #sound
+                if shop_lot_jump.rect.collidepoint(mouse_click):
+                    if player_info["score"] >= player_info["shop_lot_jump_price"]:
+                        player_info["jump_higher"] += 1
+                        player_info["score"] -= player_info["shop_lot_jump_price"]
+                        player_info["shop_lot_jump_price"] = round(player_info["shop_lot_jump_price"] * 1.4)
+                        save_player_info()
+                    else:
+                        pass
+                        #sound
+
+            window.blit(bg_shop, (0, 0))
+            mouse_pos = mouse.get_pos()
+            btn_back.selection_btn(mouse_pos, 'Pict/Menu/back_btn.png.', 'Pict/Menu/back_btn_select.png')
+
+            btn_page_1.reset()
+            btn_page_2.reset()
+
+            score_table_shop.reset()
+            score_shop_txt = font1.render(f'score: {player_info["score"]}', True, (255, 255, 255))
+            window.blit(score_shop_txt, (245, 417))
+
+            if shop_page == 1:
+                btn_page_1.change_foto('Pict/Shop/btn_page1_select.png')
+                btn_page_2.change_foto('Pict/Shop/btn_page2.png')
+
+                shop_lot_hp.reset()
+                shop_lot_jump.reset()
+
+                hp_price_txt = font1.render(f'{player_info["shop_lot_hp_price"]}', True, (255, 255, 255))
+                window.blit(hp_price_txt, (282, 195))
+                jump_price_txt = font1.render(f'{player_info["shop_lot_jump_price"]}', True, (255, 255, 255))
+                window.blit(jump_price_txt, (462, 195))
+
+            elif shop_page == 2:
+
+                btn_page_2.change_foto('Pict/Shop/btn_page2_select.png')
+                btn_page_1.change_foto('Pict/Shop/btn_page1.png')
 
 
     if screen == "menu":

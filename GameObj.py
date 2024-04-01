@@ -5,8 +5,12 @@ from pygame import *
 '''Створення об'єктів'''
 
 '''загальні'''
-player = Player('Pict/Player/Stay/player_stay.png', 250, 400, 70, 70, 4, 0, 5, True)
+player = Player('Pict/Player/Stay/player_stay.png', 250, 400, 70, 70, 4, 0, player_info["hp"], True)
 katana = Weapon('Pict/Player/weapon/katana/katana.png', 0, 0, 7, 62)
+
+hp_table = Button('Pict/Player/hp.png', -10,-15, 160, 110)
+score_table = Button('Pict/Player/hp.png', -10, 35, 160, 110)
+score_table_shop = Button('Pict/Player/hp.png', 210, 390, 160, 110)
 
 '''Нульовий рівень'''
 tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
@@ -24,6 +28,14 @@ bg_lvl_select = scale(load('Pict/Lvl_selection/level_selection_bg1.png'), (win_w
 btn_play = Button('Pict/Menu/play_btn.png', 50, 230, 200, 50)
 btn_setting = Button('Pict/Menu/setting_btn.png', 75, 300, 200, 50)
 btn_quit = Button('Pict/Menu/quit_btn.png', 100, 370, 200, 50)
+
+'''магазин'''
+
+bg_shop = scale(load('Pict/Shop/shop_open_bg.png'), (win_width, win_height))
+btn_page_1 = Button('Pict/Shop/btn_page1.png', 210, 90, 128, 128)
+btn_page_2 = Button('Pict/Shop/btn_page2.png', 340, 90, 128, 128)
+shop_lot_hp = Button('Pict/Shop/lot_in_shop_hp.png', 170, 175, 256, 256)
+shop_lot_jump = Button('Pict/Shop/lot_in_shop_jump.png', 350, 175, 256, 256)
 
 '''кнопки в налаштуваннях'''
 btn_back = Button('Pict/Menu/back_btn.png', 70, 70, 90, 80)
@@ -77,12 +89,16 @@ walk_player_sound = mixer.Sound('Sound/Game/walk_grass.flac')
 attack_katana_sound = mixer.Sound('Sound/Game/attack_katana.flac')
 bomb_explosion = mixer.Sound("Sound/Monsters/Bomb/explosion.flac")
 
+game_over = mixer.Sound("Sound/Game/GameOver.flac")
+
 
 '''тексти'''
 font1 = font.SysFont('Comic Sans', 18)
 
 txt_loudness_music = font1.render("гучність музики :", True, (180, 245, 245))
 txt_game_sound = font1.render("гучність звуків гри :", True, (180, 245, 245))
+
+player_hp = font1.render(f'HP: {player_info["hp"]}', True, (255,255,255))
 
 '''читання і побудова рівнів'''
 
@@ -133,9 +149,9 @@ def creation_lvl():
                 elif symbol == 'S':
                     monsters.add(Monster("Pict/Monsters/Skeleton/Stay/skeleton_stay1.png", x, y-15, 64, 64, 2, 0, 5, 2, 'earthly', "skeleton", 8, False))
                 elif symbol == 'B':
-                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 5, 2, 'flying', "bat", 10, False))
+                    monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 4, 1, 'flying', "bat", 10, False))
                 elif symbol == 'X':
-                    monsters.add(Monster("Pict/Monsters/Bomb/Stay/bomb_stay1.png", x, y , 48, 48, 4, 0, 1, 2, 'bomb', "bomb", 4, False))
+                    monsters.add(Monster("Pict/Monsters/Bomb/Stay/bomb_stay1.png", x, y , 48, 48, 4, 0, 2, 4, 'bomb', "bomb", 4, False))
 
                 x += 50
             y += 50

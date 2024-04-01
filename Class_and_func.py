@@ -23,6 +23,10 @@ with open('Json/Lvl_info.json', 'r', encoding='utf-8') as set_file:
 with open('Json/setting.json', 'r', encoding='utf-8') as set_file:
     settings = json.load(set_file)
 
+with open('Json/Player.json', 'r', encoding='utf-8') as set_file:
+    player_info = json.load(set_file)
+
+
 '''створення екрану'''
 win_width, win_height = 900, 550
 window = display.set_mode((win_width, win_height))
@@ -47,7 +51,9 @@ attacks = sprite.Group()
 global scroll_x
 scroll_x = 0
 
-screen = "menu"
+shop_page = 1
+
+screen = "shop"
 
 playing_bg_music = False
 
@@ -77,6 +83,11 @@ for i in range(1, 3):
 def save_lvl_info():
     with open('Json/Lvl_info.json', 'w', encoding='utf-8') as set_file:
         json.dump(lvl_info, set_file, ensure_ascii=False, sort_keys=True, indent=4)
+
+def save_player_info():
+    with open('Json/Player.json', 'w', encoding='utf-8') as set_file:
+        json.dump(player_info, set_file, ensure_ascii=False, sort_keys=True, indent=4)
+
 def draw_bg():
     for x in range(5):
         speed = 1
@@ -90,10 +101,10 @@ def draw_tow_bg():
             window.blit(bg, ((x * win_width) - scroll_x * speed, 0))
             speed += 1
 
-def back_to_0lvl(list_obj_0lvl, creak_s, player):
-    creak_s.play()
+def back_to_0lvl(list_obj_0lvl, player):
     lvl_info["current_level"] = "map0"
     save_lvl_info()
+    save_player_info()
     print(lvl_info["current_level"])
     player.rect.x, player.rect.y = 250, 400
     global scroll_x
@@ -160,7 +171,7 @@ class Player(GameSprite):
         if key_pressed[K_SPACE]:
             if self.onGround:
                 self.rect.y -= 10
-                self.speed_y -= 13
+                self.speed_y -= player_info["jump_higher"]
                 self.onGround = False
 
                 self.direction = 'up'
@@ -219,9 +230,6 @@ class Player(GameSprite):
             if self.rect.y > 600:
                 self.rect.y = 300
                 self.speed_y = 0
-
-        # if self.hp <= 0:
-        #     self.kill()
 
     def animated(self):
         # print(self.lastDirection, self.direction)
@@ -436,6 +444,7 @@ class Monster(GameSprite):
 
         if self.hp <= 0:
             self.kill()
+            player_info["score"] += 1
 
 
     def animated(self):
