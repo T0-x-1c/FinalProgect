@@ -10,7 +10,7 @@ from pygame_widgets.textbox import TextBox
 import os
 import json
 import math
-from Animation import player_images, zombie_images, skeleton_images, bat_images, bomb_images
+from Animation import player_images, zombie_images, skeleton_images, bat_images, bomb_images, trader_image
 
 init()
 font.init()
@@ -53,7 +53,7 @@ scroll_x = 0
 
 shop_page = 1
 
-screen = "shop"
+screen = "menu"
 
 playing_bg_music = False
 
@@ -103,9 +103,10 @@ def draw_tow_bg():
 
 def back_to_0lvl(list_obj_0lvl, player):
     lvl_info["current_level"] = "map0"
+    if player_info["speed_buf"] >= 1:
+        player_info["speed_buf"] -= 1
     save_lvl_info()
     save_player_info()
-    print(lvl_info["current_level"])
     player.rect.x, player.rect.y = 250, 400
     global scroll_x
     for obj in list_obj_0lvl:
@@ -183,15 +184,27 @@ class Player(GameSprite):
         if key_pressed[K_d]:
             global scroll_x
             if self.rect.x > 600 and scroll_x < 370:
-                for obj in all_obj:
-                    obj.rect.x -= self.speed_x
+
+                if player_info["speed_buf"] >= 1:
+                    for obj in all_obj:
+                        obj.rect.x -= self.speed_x + 2
+
+                    scroll_x += 1.5
+                else:
+                    for obj in all_obj:
+                        obj.rect.x -= self.speed_x
+
+                    scroll_x += 1
                 for mons in monsters:
                     mons.default_pos_x -= self.speed_x
 
-                scroll_x += 1
+
 
             if self.rect.x < 840:
-                self.rect.x += self.speed_x
+                if player_info["speed_buf"] >= 1:
+                    self.rect.x += self.speed_x + 2
+                else:
+                    self.rect.x += self.speed_x
 
             if self.onGround:
                 if sound_walk.get_num_channels() < 1:
@@ -203,15 +216,27 @@ class Player(GameSprite):
         elif key_pressed[K_a]:
             if self.rect.x < 220:
                 if scroll_x > 0:
-                    for obj in all_obj:
-                        obj.rect.x += self.speed_x
-                    for mons in monsters:
-                        mons.default_pos_x += self.speed_x
+                    if player_info["speed_buf"] >= 1:
+                        for obj in all_obj:
+                            obj.rect.x += self.speed_x + 2
+
+                        scroll_x -= 1.5
+
+                    else:
+                        for obj in all_obj:
+                            obj.rect.x += self.speed_x
 
                     scroll_x -= 1
 
+                    for mons in monsters:
+                        mons.default_pos_x += self.speed_x
+
+
             if self.rect.x > 0:
-                self.rect.x -= self.speed_x
+                if player_info["speed_buf"] >= 1:
+                    self.rect.x -= self.speed_x + 2
+                else:
+                    self.rect.x -= self.speed_x
 
             if self.onGround:
                 if sound_walk.get_num_channels() < 1:
@@ -530,6 +555,16 @@ class Monster(GameSprite):
                     if self.index >= len(bomb_images["stay"]):
                         self.index = 0
                     self.image = bomb_images["stay"][self.index]
+
+                self.index += 1
+                self.frame_count = 0
+
+        elif self.personality == "trader":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.index >= len(trader_image["stay"]):
+                    self.index = 0
+                self.image = trader_image["stay"][self.index]
 
                 self.index += 1
                 self.frame_count = 0

@@ -27,6 +27,8 @@ while Game:
         if lvl_info["current_level"] == "map0":
             draw_bg()
             shop.reset()
+            trader.reset()
+            trader.animated()
             tower.reset()
             grounds.draw(window)
             if close_dor.rect.colliderect(player):
@@ -57,7 +59,7 @@ while Game:
                     key_pressed = key.get_pressed()
                     if key_pressed[K_e]:
                         creak.play()
-                        back_to_0lvl([tower,shop, close_dor, open_dor], player)
+                        back_to_0lvl([tower,shop, close_dor, open_dor, trader], player)
                         creation_lvl()
                         player.hp = player_info["hp"]
                 else:
@@ -80,12 +82,11 @@ while Game:
             hint = font1.render("Коли ваше здоров'я нижче 0 ви помераєте :)", True, (180, 245, 245))
             window.blit(hint, (player.rect.x - 150, player.rect.y - 50))
         if player.hp <= 0:
-            if game_over.get_num_channels() < 1:
-                game_over.play()
+            if game_over_sound.get_num_channels() < 1:
+                game_over_sound.play()
                 back_to_0lvl([tower, shop, close_dor, open_dor], player)
                 creation_lvl()
                 player.hp = player_info["hp"]
-
 
 
         for monster in monsters:
@@ -148,24 +149,31 @@ while Game:
                 elif btn_page_2.rect.collidepoint(mouse_click):
                     shop_page = 2
 
-                if shop_lot_hp.rect.collidepoint(mouse_click):
+                if shop_lot_hp.rect.collidepoint(mouse_click) and shop_page == 1:
                     if player_info["score"] >= player_info["shop_lot_hp_price"]:
                         player_info["hp"] += 1
                         player_info["score"] -= player_info["shop_lot_hp_price"]
                         player_info["shop_lot_hp_price"] = round(player_info["shop_lot_hp_price"] * 1.4)
                         save_player_info()
                     else:
-                        pass
-                        #sound
-                if shop_lot_jump.rect.collidepoint(mouse_click):
+                        error_sound.play()
+                if shop_lot_jump.rect.collidepoint(mouse_click) and shop_page == 1:
                     if player_info["score"] >= player_info["shop_lot_jump_price"]:
                         player_info["jump_higher"] += 1
                         player_info["score"] -= player_info["shop_lot_jump_price"]
-                        player_info["shop_lot_jump_price"] = round(player_info["shop_lot_jump_price"] * 1.4)
+                        player_info["shop_lot_jump_price"] = round(player_info["shop_lot_jump_price"] * 1.6)
                         save_player_info()
                     else:
-                        pass
-                        #sound
+                        error_sound.play()
+
+                if shop_lot_speed.rect.collidepoint(mouse_click) and shop_page == 2:
+                    if player_info["hp"] > 3:
+                        player_info["speed_buf"] += 3
+                        player_info["hp"] -= 1
+                        player.hp = player_info["hp"]
+                        save_player_info()
+                    else:
+                        error_sound.play()
 
             window.blit(bg_shop, (0, 0))
             mouse_pos = mouse.get_pos()
@@ -194,6 +202,8 @@ while Game:
 
                 btn_page_2.change_foto('Pict/Shop/btn_page2_select.png')
                 btn_page_1.change_foto('Pict/Shop/btn_page1.png')
+
+                shop_lot_speed.reset()
 
 
     if screen == "menu":

@@ -17,6 +17,8 @@ tower = GameSprite('Pict/Lvl_sprite/tower.png', 300, -98, 300, 600)
 close_dor = GameSprite('Pict/Lvl_sprite/tower_close_dor.png', 399, 402, 103, 100)
 open_dor = GameSprite('Pict/Lvl_sprite/tower_open_dor.png', 399, 402, 103, 100)
 shop = GameSprite('Pict/Lvl_sprite/shop.png', 800, 320, 200, 200)
+trader = Monster("Pict/Monsters/Zombie/Stay/zombie_stay1.png", 1000, 436, 64, 64, 0, 0, 100000, 0, 'trader', "trader", 6, False)
+
 
 '''фони'''
 bg_menu = scale(load('Pict/BackGround/Menu/bg_menu.png'), (win_width, win_height))
@@ -36,6 +38,7 @@ btn_page_1 = Button('Pict/Shop/btn_page1.png', 210, 90, 128, 128)
 btn_page_2 = Button('Pict/Shop/btn_page2.png', 340, 90, 128, 128)
 shop_lot_hp = Button('Pict/Shop/lot_in_shop_hp.png', 170, 175, 256, 256)
 shop_lot_jump = Button('Pict/Shop/lot_in_shop_jump.png', 350, 175, 256, 256)
+shop_lot_speed = Button('Pict/Shop/lot_in_shop_speed.png', 170, 175, 256, 256)
 
 '''кнопки в налаштуваннях'''
 btn_back = Button('Pict/Menu/back_btn.png', 70, 70, 90, 80)
@@ -89,7 +92,8 @@ walk_player_sound = mixer.Sound('Sound/Game/walk_grass.flac')
 attack_katana_sound = mixer.Sound('Sound/Game/attack_katana.flac')
 bomb_explosion = mixer.Sound("Sound/Monsters/Bomb/explosion.flac")
 
-game_over = mixer.Sound("Sound/Game/GameOver.flac")
+game_over_sound = mixer.Sound("Sound/Game/GameOver.flac")
+error_sound = mixer.Sound("Sound/Game/error.flac")
 
 
 '''тексти'''

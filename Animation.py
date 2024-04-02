@@ -34,3 +34,6 @@ bomb_images = {
     "stay": load_images_from_folder("Pict/Monsters/Bomb/Stay", 48, 48),
     "bang": load_images_from_folder("Pict/Monsters/Bomb/Bang", 48, 48)
 }
+trader_image = {
+    "stay": load_images_from_folder("Pict/Shop/Trader", 64, 64)
+}
