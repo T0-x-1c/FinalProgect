@@ -38,7 +38,7 @@ btn_page_1 = Button('Pict/Shop/btn_page1.png', 210, 90, 128, 128)
 btn_page_2 = Button('Pict/Shop/btn_page2.png', 340, 90, 128, 128)
 shop_lot_hp = Button('Pict/Shop/lot_in_shop_hp.png', 170, 175, 256, 256)
 shop_lot_jump = Button('Pict/Shop/lot_in_shop_jump.png', 350, 175, 256, 256)
-shop_lot_speed = Button('Pict/Shop/lot_in_shop_speed.png', 170, 175, 256, 256)
+shop_lot_farsightedness = Button('Pict/Shop/lot_in_shop_farsightedness.png', 170, 175, 256, 256)
 
 '''кнопки в налаштуваннях'''
 btn_back = Button('Pict/Menu/back_btn.png', 70, 70, 90, 80)
@@ -66,10 +66,10 @@ btn_lvl_7 = Button('Pict/Lvl_selection/btn_lvl7.png', 660, 58, 80, 80)
 btn_lvl_8 = Button('Pict/Lvl_selection/btn_lvl8.png', 760, 58, 80, 80)
 btn_lvl_9 = Button('Pict/Lvl_selection/btn_lvl9.png', 60, 153, 80, 80)
 btn_lvl_10 = Button('Pict/Lvl_selection/btn_lvl10.png', 160, 153, 80, 80)
-btn_lvl_11 = Button('Pict/Lvl_selection/btn_lvl12.png', 260, 153, 80, 80)
-btn_lvl_12 = Button('Pict/Lvl_selection/btn_lvl13.png', 360, 153, 80, 80)
-btn_lvl_13 = Button('Pict/Lvl_selection/btn_lvl14.png', 460, 153, 80, 80)
-btn_lvl_14 = Button('Pict/Lvl_selection/btn_lvl15.png', 560, 153, 80, 80)
+btn_lvl_11 = Button('Pict/Lvl_selection/btn_lvl11.png', 260, 153, 80, 80)
+btn_lvl_12 = Button('Pict/Lvl_selection/btn_lvl12.png', 360, 153, 80, 80)
+btn_lvl_13 = Button('Pict/Lvl_selection/btn_lvl13.png', 460, 153, 80, 80)
+btn_lvl_14 = Button('Pict/Lvl_selection/btn_lvl14.png', 560, 153, 80, 80)
 btn_lvl_15 = Button('Pict/Lvl_selection/btn_lvl15.png', 660, 153, 80, 80)
 btn_lvl_16 = Button('Pict/Lvl_selection/btn_lvl16.png', 760, 153, 80, 80)
 
@@ -122,8 +122,6 @@ def creation_lvl():
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground.png", x, y, 50, 50))
                 elif symbol == 'T':
                     grounds.add(GameSprite("Pict/Lvl_sprite/ground_2.png", x, y, 50, 50))
-                # elif symbol == 'D':
-                #     grounds.add(GameSprite("Pict/Lvl_sprite/dirt.jpeg", x, y, 50, 50))
                 elif symbol == 'E':
                     grounds.add(GameSprite("Pict/Lvl_sprite/right_corner.png", x, y, 50, 50))
                 elif symbol == 'Q':
@@ -156,6 +154,12 @@ def creation_lvl():
                     monsters.add(Monster("Pict/Monsters/Bat/bat_run1.png", x, y , 32, 32, 1, 0, 4, 1, 'flying', "bat", 10, False))
                 elif symbol == 'X':
                     monsters.add(Monster("Pict/Monsters/Bomb/Stay/bomb_stay1.png", x, y , 48, 48, 4, 0, 2, 4, 'bomb', "bomb", 4, False))
+                elif symbol == 'H':
+                    monsters.add(Monster("Pict/Monsters/Bubble/Stay/bubble_stay1.png", x, y , 48, 48, 3, 0, 5, 1, 'flying2', "bubble", 5, False))
+                elif symbol == 'V':
+                    monsters.add(Monster("Pict/Monsters/Licker/Stay/licker_stay1.png", x, y , 48, 48, 3, 0, 1, 1, 'earthly', "licker", 4, False))
+                elif symbol == 'M':
+                    monsters.add(Monster("Pict/Monsters/Rat/Stay/rat_stay1.png", x, y , 48, 48, 3, 0, 5, 1, 'earthly', "rat", 6, False))
 
                 x += 50
             y += 50

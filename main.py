@@ -28,7 +28,7 @@ while Game:
             draw_bg()
             shop.reset()
             trader.reset()
-            trader.animated()
+            trader.animated(target = player, attack_sound=monster_attack_sound)
             tower.reset()
             grounds.draw(window)
             if close_dor.rect.colliderect(player):
@@ -84,7 +84,7 @@ while Game:
         if player.hp <= 0:
             if game_over_sound.get_num_channels() < 1:
                 game_over_sound.play()
-                back_to_0lvl([tower, shop, close_dor, open_dor], player)
+                back_to_0lvl([tower, shop, close_dor, open_dor, trader], player)
                 creation_lvl()
                 player.hp = player_info["hp"]
 
@@ -92,7 +92,7 @@ while Game:
         for monster in monsters:
             monster.reset()
             monster.update(target=player, ground=grounds, attack_sound=monster_attack_sound, explosion_sound=bomb_explosion)
-            monster.animated()
+            monster.animated(target = player, attack_sound = monster_attack_sound)
 
         if katana.extended:
             katana.reset()
@@ -105,6 +105,7 @@ while Game:
         attack_monsters = sprite.groupcollide(monsters, attacks, False, True)
         for monster in attack_monsters:
             monster.hp -= attack.damage
+
 
     if screen == "lvl_selection":
         for e in event.get():
@@ -166,11 +167,10 @@ while Game:
                     else:
                         error_sound.play()
 
-                if shop_lot_speed.rect.collidepoint(mouse_click) and shop_page == 2:
-                    if player_info["hp"] > 3:
-                        player_info["speed_buf"] += 3
-                        player_info["hp"] -= 1
-                        player.hp = player_info["hp"]
+                if shop_lot_farsightedness.rect.collidepoint(mouse_click) and shop_page == 2:
+                    if player_info["farsightedness"] == False and player_info["hp"] >= 4:
+                        player_info["farsightedness"] = True
+                        player_info["hp"] -= 3
                         save_player_info()
                     else:
                         error_sound.play()
@@ -203,7 +203,7 @@ while Game:
                 btn_page_2.change_foto('Pict/Shop/btn_page2_select.png')
                 btn_page_1.change_foto('Pict/Shop/btn_page1.png')
 
-                shop_lot_speed.reset()
+                shop_lot_farsightedness.reset()
 
 
     if screen == "menu":

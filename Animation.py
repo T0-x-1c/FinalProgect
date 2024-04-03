@@ -37,3 +37,21 @@ bomb_images = {
 trader_image = {
     "stay": load_images_from_folder("Pict/Shop/Trader", 64, 64)
 }
+licker_images = {
+    "run": load_images_from_folder("Pict/Monsters/Licker/Run", 64, 64),
+    "stay": load_images_from_folder("Pict/Monsters/Licker/Stay", 64, 64),
+    "attack": load_images_from_folder("Pict/Monsters/Licker/Attack", 64, 64),
+    "dead": load_images_from_folder("Pict/Monsters/Licker/Dead", 64, 64)
+}
+bubble_images = {
+    "run": load_images_from_folder("Pict/Monsters/Bubble/Run", 48, 48),
+    "stay": load_images_from_folder("Pict/Monsters/Bubble/Stay", 48, 48),
+    "attack": load_images_from_folder("Pict/Monsters/Bubble/Attack", 48, 48),
+    "dead": load_images_from_folder("Pict/Monsters/Bubble/Dead", 48, 48)
+}
+rat_images = {
+    "run": load_images_from_folder("Pict/Monsters/Rat/Run", 64, 64),
+    "stay": load_images_from_folder("Pict/Monsters/Rat/Stay", 64, 64),
+    "attack": load_images_from_folder("Pict/Monsters/Rat/Attack", 64, 64),
+    "dead": load_images_from_folder("Pict/Monsters/Rat/Dead", 64, 64)
+}

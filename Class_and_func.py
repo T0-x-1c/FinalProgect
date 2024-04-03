@@ -10,7 +10,7 @@ from pygame_widgets.textbox import TextBox
 import os
 import json
 import math
-from Animation import player_images, zombie_images, skeleton_images, bat_images, bomb_images, trader_image
+from Animation import player_images, zombie_images, skeleton_images, bat_images, bomb_images, trader_image, licker_images, bubble_images, rat_images
 
 init()
 font.init()
@@ -183,28 +183,26 @@ class Player(GameSprite):
 
         if key_pressed[K_d]:
             global scroll_x
-            if self.rect.x > 600 and scroll_x < 370:
-
-                if player_info["speed_buf"] >= 1:
-                    for obj in all_obj:
-                        obj.rect.x -= self.speed_x + 2
-
-                    scroll_x += 1.5
-                else:
+            if player_info["farsightedness"]:
+                if self.rect.x > 500 and scroll_x < 370:
                     for obj in all_obj:
                         obj.rect.x -= self.speed_x
 
                     scroll_x += 1
-                for mons in monsters:
-                    mons.default_pos_x -= self.speed_x
+                    for mons in monsters:
+                        mons.default_pos_x -= self.speed_x
+            else:
+                if self.rect.x > 600 and scroll_x < 370:
+                    for obj in all_obj:
+                        obj.rect.x -= self.speed_x
 
+                    scroll_x += 1
+                    for mons in monsters:
+                        mons.default_pos_x -= self.speed_x
 
 
             if self.rect.x < 840:
-                if player_info["speed_buf"] >= 1:
-                    self.rect.x += self.speed_x + 2
-                else:
-                    self.rect.x += self.speed_x
+                self.rect.x += self.speed_x
 
             if self.onGround:
                 if sound_walk.get_num_channels() < 1:
@@ -214,29 +212,29 @@ class Player(GameSprite):
             self.lastDirection = self.direction
 
         elif key_pressed[K_a]:
-            if self.rect.x < 220:
-                if scroll_x > 0:
-                    if player_info["speed_buf"] >= 1:
-                        for obj in all_obj:
-                            obj.rect.x += self.speed_x + 2
-
-                        scroll_x -= 1.5
-
-                    else:
+            if player_info["farsightedness"]:
+                if self.rect.x < 400:
+                    if scroll_x > 0:
                         for obj in all_obj:
                             obj.rect.x += self.speed_x
 
-                    scroll_x -= 1
+                        scroll_x -= 1
 
-                    for mons in monsters:
-                        mons.default_pos_x += self.speed_x
+                        for mons in monsters:
+                            mons.default_pos_x += self.speed_x
+            else:
+                if self.rect.x < 220:
+                    if scroll_x > 0:
+                        for obj in all_obj:
+                            obj.rect.x += self.speed_x
 
+                        scroll_x -= 1
+
+                        for mons in monsters:
+                            mons.default_pos_x += self.speed_x
 
             if self.rect.x > 0:
-                if player_info["speed_buf"] >= 1:
-                    self.rect.x -= self.speed_x + 2
-                else:
-                    self.rect.x -= self.speed_x
+                self.rect.x -= self.speed_x
 
             if self.onGround:
                 if sound_walk.get_num_channels() < 1:
@@ -257,7 +255,6 @@ class Player(GameSprite):
                 self.speed_y = 0
 
     def animated(self):
-        # print(self.lastDirection, self.direction)
         self.frame_count += 1
 
         if self.frame_count >= self.max_frame_count:
@@ -368,12 +365,14 @@ class Monster(GameSprite):
                 start_time_create = False
                 self.see_target = True
                 self.direction = 'right'
+                self.lastDirection = 'right'
 
             elif target.rect.x < self.rect.x and self.rect.x - target.rect.x <= 300 and target.rect.y - self.rect.y <= 100:
                 self.rect.x -= self.speed_x
                 start_time_create = False
                 self.see_target = True
                 self.direction = 'left'
+                self.lastDirection = 'left'
 
             else:
                 self.see_target = False
@@ -390,13 +389,11 @@ class Monster(GameSprite):
                         self.rect.x += self.speed_x / 2
                         self.direction = 'right'
 
-            if self.rect.x == self.default_pos_x:
-                self.direction = None
+                if self.rect.x == self.default_pos_x:
+                    self.direction = None
 
             if self.rect.colliderect(target):
-                if attack_sound.get_num_channels() < 1:
-                    attack_sound.play()
-                    target.hp -= self.damage
+                self.direction = 'attack'
 
         elif self.type == 'flying':
 
@@ -429,6 +426,41 @@ class Monster(GameSprite):
                     attack_sound.play()
                     target.hp -= self.damage
 
+        elif self.type == 'flying2':
+            if self.direction != 'attack':
+                if self.rect.centerx < target.rect.centerx:
+                    if target.rect.centerx - self.rect.centerx <= 200:
+                        self.direction = 'right'
+                        self.lastDirection = 'right'
+                        self.see_target = True
+                        self.rect.x += self.speed_x
+
+                    else:
+                        self.see_target = False
+                        self.direction = None
+
+                elif self.rect.centerx > target.rect.centerx:
+                    if self.rect.centerx - target.rect.centerx <= 200:
+                        self.direction = 'left'
+                        self.lastDirection = 'left'
+                        self.see_target = True
+                        self.rect.x -= self.speed_x
+
+                    else:
+                        self.see_target = False
+                        self.direction = None
+
+                if self.rect.centery < target.rect.centery and target.rect.centery - self.rect.centery > 30 and self.see_target:
+                    self.rect.y += self.speed_x
+
+                if self.rect.centery > target.rect.centery and self.rect.centery - target.rect.centery > 30 and self.see_target:
+                    self.rect.y -= self.speed_x
+
+
+            if self.rect.colliderect(target):
+                self.direction = 'attack'
+
+
         elif self.type == "bomb":
 
             for grd in colide_list:
@@ -459,20 +491,20 @@ class Monster(GameSprite):
                 self.direction = 'left'
 
             else:
-                self.direction = None
+                if self.direction != "bang":
+                    self.direction = None
 
             if self.rect.colliderect(target):
                 self.direction = "bang"
-                if explosion_sound.get_num_channels() < 1:
-                    explosion_sound.play()
-                    target.hp -= self.damage
+
+
 
         if self.hp <= 0:
             self.kill()
             player_info["score"] += 1
 
 
-    def animated(self):
+    def animated(self, target, attack_sound):
         if self.personality == "zombie":
             self.frame_count += 1
             if self.frame_count >= self.max_frame_count:
@@ -486,6 +518,11 @@ class Monster(GameSprite):
                         self.index = 0
                     self.image = transform.flip(zombie_images["run"][self.index], True, False)
 
+                elif self.direction == 'attack':
+                    if attack_sound.get_num_channels() < 1:
+                        attack_sound.play()
+                        target.hp -= self.damage
+                        self.direction = None
 
                 elif self.direction == None:
                     if self.index >= len(zombie_images["stay"]):
@@ -507,6 +544,12 @@ class Monster(GameSprite):
                     if self.index >= len(skeleton_images["run"]):
                         self.index = 0
                     self.image = transform.flip(skeleton_images["run"][self.index], True, False)
+
+                elif self.direction == 'attack':
+                    if attack_sound.get_num_channels() < 1:
+                        attack_sound.play()
+                        target.hp -= self.damage
+                        self.direction = None
 
                 elif self.direction == None:
                     if self.index >= len(skeleton_images["stay"]):
@@ -537,8 +580,11 @@ class Monster(GameSprite):
             if self.frame_count >= self.max_frame_count:
                 if self.direction == "bang":
                     if self.index >= len(bomb_images["bang"]):
-                        self.index = 0
-                        self.kill()
+                        if attack_sound.get_num_channels() < 1:
+                            attack_sound.play()
+                            self.index = 0
+                            target.hp -= self.damage
+                            self.kill()
                     self.image = bomb_images["bang"][self.index]
 
                 elif self.direction == 'right':
@@ -568,6 +614,137 @@ class Monster(GameSprite):
 
                 self.index += 1
                 self.frame_count = 0
+
+        elif self.personality == "licker":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == 'right':
+                    if self.index >= len(licker_images["run"]):
+                        self.index = 0
+                    self.image = licker_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(licker_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(licker_images["run"][self.index], True, False)
+
+                elif self.direction == "attack":
+                    if self.lastDirection == 'right':
+                        if self.index >= len(licker_images["attack"]):
+                            self.index = 0
+                            attack_sound.play()
+                            target.hp -= self.damage
+                            self.direction = None
+                        self.image = licker_images["attack"][self.index]
+
+                    elif self.lastDirection == 'left':
+                        if self.index >= len(licker_images["attack"]):
+                            self.index = 0
+                            attack_sound.play()
+                            target.hp -= self.damage
+                            self.direction = None
+                        self.image = transform.flip(licker_images["attack"][self.index], True, False)
+
+                elif self.direction == "dead":
+                    if self.index >= len(licker_images["dead"]):
+                        self.index = 0
+                    self.image = licker_images["dead"][self.index]
+
+                elif self.direction == None:
+                    if self.index >= len(licker_images["stay"]):
+                        self.index = 0
+                    self.image = licker_images["stay"][self.index]
+
+                self.index += 1
+                self.frame_count = 0
+
+        elif self.personality == "bubble":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == 'right':
+                    if self.index >= len(bubble_images["run"]):
+                        self.index = 0
+                    self.image = bubble_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(bubble_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(bubble_images["run"][self.index], True, False)
+
+                elif self.direction == "attack":
+                    if self.lastDirection == 'right':
+                        if self.index >= len(bubble_images["attack"]):
+                            self.index = 0
+                            attack_sound.play()
+                            target.hp -= self.damage
+                            self.direction = None
+                        self.image = bubble_images["attack"][self.index]
+
+                    elif self.lastDirection == 'left':
+                        if self.index >= len(bubble_images["attack"]):
+                            self.index = 0
+                            attack_sound.play()
+                            target.hp -= self.damage
+                            self.direction = None
+                        self.image = transform.flip(bubble_images["attack"][self.index], True, False)
+
+                elif self.direction == "dead":
+                    if self.index >= len(bubble_images["dead"]):
+                        self.index = 0
+                    self.image = bubble_images["dead"][self.index]
+
+                elif self.direction == None:
+                    if self.index >= len(bubble_images["stay"]):
+                        self.index = 0
+                    self.image = bubble_images["stay"][self.index]
+
+                self.index += 1
+                self.frame_count = 0
+
+        elif self.personality == "rat":
+            self.frame_count += 1
+            if self.frame_count >= self.max_frame_count:
+                if self.direction == 'right':
+                    if self.index >= len(rat_images["run"]):
+                        self.index = 0
+                    self.image = rat_images["run"][self.index]
+
+                elif self.direction == 'left':
+                    if self.index >= len(rat_images["run"]):
+                        self.index = 0
+                    self.image = transform.flip(rat_images["run"][self.index], True, False)
+
+                elif self.direction == "attack":
+                    if self.lastDirection == 'right':
+                        if self.index >= len(rat_images["attack"]):
+                            self.index = 0
+                            attack_sound.play()
+                            target.hp -= self.damage
+                            self.direction = None
+                        self.image = rat_images["attack"][self.index]
+
+                    elif self.lastDirection == 'left':
+                        if self.index >= len(rat_images["attack"]):
+                            self.index = 0
+                            attack_sound.play()
+                            target.hp -= self.damage
+                            self.direction = None
+                        self.image = transform.flip(rat_images["attack"][self.index], True, False)
+
+                elif self.direction == "dead":
+                    if self.index >= len(rat_images["dead"]):
+                        self.index = 0
+                    self.image = rat_images["dead"][self.index]
+
+                elif self.direction == None:
+                    if self.index >= len(rat_images["stay"]):
+                        self.index = 0
+                    self.image = rat_images["stay"][self.index]
+
+
+                self.index += 1
+                self.frame_count = 0
+
 
 class Weapon(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_width, player_height):
