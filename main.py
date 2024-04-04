@@ -119,6 +119,9 @@ while Game:
                         screen = "game"
                         creation_lvl()
 
+                        scroll_x = 0
+                        player.rect.x, player.rect.y = 350, 400
+
             if e.type == KEYDOWN:
                 if e.key == K_e or e.key == K_ESCAPE:
                     creak.play()
@@ -262,6 +265,23 @@ while Game:
 
         music_output.setText(round(music_loudness.getValue(), 2))
         game_sound_output.setText(round(game_sound_loudness.getValue(), 2))
+
+        if btn_back.rect.collidepoint(mouse_click):
+            bg_music.set_volume(round(music_loudness.getValue(), 2))
+
+            click_sound.set_volume(round(game_sound_loudness.getValue(), 2))
+            creak.set_volume(round(game_sound_loudness.getValue(), 2))
+            player_walk_grass.set_volume(round(game_sound_loudness.getValue(), 2))
+            monster_attack_sound.set_volume(round(game_sound_loudness.getValue(), 2))
+            walk_player_sound.set_volume(round(game_sound_loudness.getValue(), 2))
+            attack_katana_sound.set_volume(round(game_sound_loudness.getValue(), 2))
+            bomb_explosion.set_volume(round(game_sound_loudness.getValue(), 2))
+            game_over_sound.set_volume(round(game_sound_loudness.getValue(), 2))
+            error_sound.set_volume(round(game_sound_loudness.getValue(), 2))
+
+            settings["game_sound_loudness"] = round(game_sound_loudness.getValue(), 2)
+            settings["music_loudness"] = round(music_loudness.getValue(), 2)
+
 
     pygame.display.update()
     clock.tick(FPS)

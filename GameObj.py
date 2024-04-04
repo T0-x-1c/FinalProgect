@@ -107,7 +107,6 @@ player_hp = font1.render(f'HP: {player_info["hp"]}', True, (255,255,255))
 '''читання і побудова рівнів'''
 
 def creation_lvl():
-    print("creating level :", lvl_info["current_level"])
     grounds.empty()
     grounds_bg.empty()
     doors.empty()

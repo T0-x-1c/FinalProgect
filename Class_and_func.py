@@ -27,9 +27,12 @@ with open('Json/Player.json', 'r', encoding='utf-8') as set_file:
     player_info = json.load(set_file)
 
 
+icon = image.load("witch.png")
 '''створення екрану'''
 win_width, win_height = 900, 550
 window = display.set_mode((win_width, win_height))
+display.set_caption("Witch Tower")
+display.set_icon(icon)
 
 clock = time.Clock()
 FPS = 60
@@ -84,6 +87,10 @@ def save_lvl_info():
     with open('Json/Lvl_info.json', 'w', encoding='utf-8') as set_file:
         json.dump(lvl_info, set_file, ensure_ascii=False, sort_keys=True, indent=4)
 
+def save_setting():
+    with open('Json/setting.json', 'w', encoding='utf-8') as set_file:
+        json.dump(settings, set_file, ensure_ascii=False, sort_keys=True, indent=4)
+
 def save_player_info():
     with open('Json/Player.json', 'w', encoding='utf-8') as set_file:
         json.dump(player_info, set_file, ensure_ascii=False, sort_keys=True, indent=4)
@@ -103,8 +110,6 @@ def draw_tow_bg():
 
 def back_to_0lvl(list_obj_0lvl, player):
     lvl_info["current_level"] = "map0"
-    if player_info["speed_buf"] >= 1:
-        player_info["speed_buf"] -= 1
     save_lvl_info()
     save_player_info()
     player.rect.x, player.rect.y = 250, 400
