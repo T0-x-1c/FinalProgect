@@ -1,0 +1,13 @@
+       C     CC  C C C C  CCC   C CC  C  C
+       C     CC  C C C C  CCC   C CC  C  C
+       C  D  CC  C C C C  CCC   C CC  C  C
+       C    ZCC BC C C CB CCC   C CC  C  C
+       QGGGGGEC  C QGE C  CQE   GGGC  C  C
+       YUUUUUIC  C YUI C  CYI   YUIC  C  C
+       C  C   C  C     C  C     C  C  C  C
+       C  C   C  C  H  C  C     C  C  QGGE
+       C  C   C  C     C  C     C  C  YUUI
+       QGGE   QGGE     QGGE     QGGE
+       LRYI  BYUUI     YUUI     YUUI
+       LR   X X  X   X   X   X   X    X  X
+GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
